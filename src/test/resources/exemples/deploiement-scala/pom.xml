@@ -1,0 +1,102 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>6ytes.io</groupId>
+  <artifactId>site-usine-logicielle-com</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>Site Internet www.usine-logicelle.com</name>
+  <description>Le code source du site internet www.usine-logicelle.com</description>
+  	<build>
+		<!-- <finalName>jiblWebappTest</finalName> -->
+		<plugins>
+			<plugin>
+				<groupId>lasselle</groupId>
+				<artifactId>deployeur</artifactId>
+				<version>0.0.2-SNAPSHOT</version>
+				<executions>
+					<execution>
+						<phase>install</phase>
+						<goals>
+							<goal>deploie-app-scala</goal>
+							
+<!-- 							                                            -->
+<!-- 							Mapping opérations standard / goals maven   -->
+<!-- 							                                            -->
+<!-- 							<goal>deploy</goal>                         -->
+<!-- 							                                            -->
+<!-- 							<goal>undeploy</goal>                       -->
+<!-- 							                                            -->
+							
+						</goals>
+						<configuration>
+
+
+
+
+
+
+							<!-- topologie de la cible de déploiement -->
+
+							<!-- COMPOSANT SRV SCALA -->
+							<!-- Cette configuration permet de définir quel est le serveur jee 
+								dans lequel déployer le war buildé. -->
+<!-- 							<nom-conteneur-docker-srv-scala>ciblededeploiement-composant-srv-scala</nom-conteneur-docker-srv-scala> -->
+							<!-- <docker-host-ip>192.168.1.149</docker-host-ip> -->
+							<ip-cible-srv-scala>192.168.1.149</ip-cible-srv-scala>
+							<!-- <docker-guest-jee-port-no>192.168.1.149</docker-guest-jee-port-no> -->
+							<no-port-cible-srv-scala>12456</no-port-cible-srv-scala>
+
+							<!-- COMPOSANT SGBDR -->
+							<!-- Cette configuration pourrait être utilisée pour mettre la BDD 
+								dans un état particulier, souhaité pour le déploiement puis laisser un script 
+								permettant de faire revenir la BDD dans son état initial, après la fin ds 
+								tests. -->
+							<!-- Si le script de retour à l'état initial n'existe pas, il est 
+								créé en utilisant mysqldump -->
+							<!-- Si le script de retour à l'état initial existe, il est exécuté 
+								pour retour à l'état initial avant déploiement -->
+
+							<!-- <nom-conteneur-docker-sgbdr>ciblededeploiement-composant-sgbdr</nom-conteneur-docker-sgbdr> -->
+							<!-- <ip-cible-sgbdr>192.168.1.149</ip-cible-sgbdr> -->
+							<!-- <no-port-cible-sgbdr>4466</no-port-cible-sgbdr> -->
+
+
+							<!-- Utilisateur Linux opérateur du plugin -->
+							<ops-lx-user>lauriane</ops-lx-user>
+							<ops-lx-pwd>lauriane</ops-lx-pwd>
+
+
+							<!-- Utilisateur Linux opérateur du plugin pour les 2 repos:
+							     Il fautdra prévoir une évolution où le plugin va utiliser
+							     un ustilisateur git différent pour chaque repo git
+							-->
+							
+							<!-- repo git assistant des déploiements -->
+							<ops-git-username>Jean-Baptiste-Lasselle</ops-git-username>
+							<!-- repo git versionnant le code source de l'application -->
+							<ops-scm-git-username>Jean-Baptiste-Lasselle</ops-scm-git-username>
+
+							<!-- répertoire dansle projet maven, où se truve le code source de l'applciations scala -->
+							<repertoire-code-scala>scalatron</repertoire-code-scala>
+							<!-- repo code source application scala -->
+ 							<url-repo-git-app-scala>https://github.com/Jean-Baptiste-Lasselle/siteweb-usinelogicielle.com</url-repo-git-app-scala>
+							<nom-repo-git-app-scala>siteweb-usinelogicielle.com</nom-repo-git-app-scala>
+
+							<!-- repo git assistant du plugin -->
+							<url-repo-git-deploiements>https://github.com/Jean-Baptiste-Lasselle/deploiement-usine-logicielle.com</url-repo-git-deploiements>
+							<nom-repo-git-deploiements>deploiement-usine-logicielle.com</nom-repo-git-deploiements>
+							<git-username>Jean-Baptiste-Lasselle</git-username>
+<!-- 							<git-userpwd>****</git-userpwd> -->
+							<!-- vous devez choisir un répertoire qui pourra être librement utilisé 
+								par le plugin maven -->
+<!-- 							<repertoire-repo-git-local>C:\moi\mes_repos_git\tempmvnautobuild2</repertoire-repo-git-local> -->
+							<!-- <repertoire-repo-git-local>C:\\moi\\mes_repos_git\\tempmvnautobuild</repertoire-repo-git-local> -->
+							<!-- <repertoire-repo-git-local>C:\\moi\\mes_repos_git/tempmvnautobuild</repertoire-repo-git-local> -->
+
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>
+
