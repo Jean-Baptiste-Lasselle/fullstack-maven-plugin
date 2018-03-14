@@ -188,21 +188,11 @@ public class DeployerApplicationScala extends AbstractMojo implements ComposantD
 		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
 		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
 		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++  MONTEE CIBLE DEPLOIEMENT SCALA	+++++++++++++++ ");
+		System.out.println(" ++++++++++++  MONTEE CIBLE DEPLOIEMENT SCALA	+++++++++++ ");
 		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
 		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		
 		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++	         CHECK UP DES VALEURS PARAMETRES            +++");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++	VALEUR adresseIPcibleDeploiement: " + this.adresseIPcibleDeploiement + " ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++	VALEUR this.ops_lx_username: " + this.ops_lx_username + " ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++	VALEUR this.ops_lx_userpwd: " + this.ops_lx_userpwd + " ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
+		System.out.println(" +++	IP Cible déploiement: " + this.adresseIPcibleDeploiement + " ");
 		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
 		
 
@@ -227,7 +217,7 @@ public class DeployerApplicationScala extends AbstractMojo implements ComposantD
 		 * 3. Je fais le commit and push vers le repo référentiel de versionning des déploiements de l'applciations Scala
 		 */
 //		this.faireCommitAndPushDeploiement();
-		JiblExec.executeCetteCommande(" echo \"DEPLOY SCALA \\>\\> PRESSEZ LA TOUCHE ENTREE DE VOTRE CLAVIER POUR DEMARRER LE DEPLOIEMENT DE L'APPLICATION SCALA\";", adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
+		JiblExec.executeCetteCommande("# >>> PRESSEZ LA TOUCHE ENTREE DE VOTRE CLAVIER POUR DEMARRER LE DEPLOIEMENT DE L'APPLICATION SCALA <<< #", adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
 		/**
 		 * 4. Si un process nommé "software-factory" existe, je le stoppe, pour le re-démarrer
 		 * Cela me permet de recommencer " de zéro" à partir de la nouvelle version de code.
@@ -256,7 +246,7 @@ public class DeployerApplicationScala extends AbstractMojo implements ComposantD
 		JiblExec.executeCetteCommande("chmod +x " + nomRepertoireOperations + "/recette-deploiement-application-scala.sh;", adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
 		// J'exécute la recette de déploiement spécifique à l'OS de la cible de déploiement.
 		// Je dois exécuter "sans fin", parce que le process s'exéctant suite à la commande sbt ~run ne se termine jamais.
-		JiblExec.executeCetteCommande(" echo \"DEPLOY SCALA - FIN\";", adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
+		JiblExec.executeCetteCommande("# >>> DEPLOIEMENT DE L'APPLICATION SCALA TERMINE AVEC SUCCES <<< #", adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
 		JiblExecSansFin.executeCetteCommande("pwd;" + nomRepertoireOperations + "/recette-deploiement-application-scala.sh " + REPERTOIRE_PROCHAIN_BUILD + " " + this.repertoireAppScalaDsCible + " " + this.execArgsScalaApp + ";", adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
 		
 		/**

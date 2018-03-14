@@ -192,32 +192,24 @@ public class ExecuterBuildApplicationScala extends AbstractMojo implements Compo
 		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
 		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
 		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++++++++++++++  BUILD APPLICATION SCALA	+++++++++++++++++++ ");
+		System.out.println(" +++++++++++++++  BUILD APPLICATION SCALA	+++++++++++++++ ");
 		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
 		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
+		System.out.println(" +++	IP Cible déploiement: " + this.adresseIPcibleDeploiement + " ");
+		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" +++	VALEUR this.ops_lx_username: " + this.ops_lx_username + " ");
+//		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" +++	VALEUR this.ops_lx_userpwd: " + this.ops_lx_userpwd + " ");
+//		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" +++	VALEUR this.ops_git_username: " + this.ops_git_username + " ");
+//		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" +++	VALEUR this.ops_git_userpwd: " + this.ops_git_userpwd + " ");
+//		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" +++	VALEUR this.repertoireScala: " + this.repertoireScala + " ");
+//		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" +++	VALEUR this.URL_REPO_CODE_SOURCE_APP_SCALA: " + this.URL_REPO_CODE_SOURCE_APP_SCALA + " ");
+//		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
 		
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++	         CHECK UP DES VALEURS PARAMETRES            +++");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++	VALEUR adresseIPcibleDeploiement: " + this.adresseIPcibleDeploiement + " ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++	VALEUR this.ops_lx_username: " + this.ops_lx_username + " ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++	VALEUR this.ops_lx_userpwd: " + this.ops_lx_userpwd + " ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++	VALEUR this.ops_git_username: " + this.ops_git_username + " ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++	VALEUR this.ops_git_userpwd: " + this.ops_git_userpwd + " ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++	VALEUR this.repertoireScala: " + this.repertoireScala + " ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++	VALEUR this.URL_REPO_CODE_SOURCE_APP_SCALA: " + this.URL_REPO_CODE_SOURCE_APP_SCALA + " ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		
-		
-		
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
 
 		/**
 		 * 1. Initialiser le positionnement de version du code source de l'app. dans le répertoire {@see DeploiementScala#repertoireScala}
