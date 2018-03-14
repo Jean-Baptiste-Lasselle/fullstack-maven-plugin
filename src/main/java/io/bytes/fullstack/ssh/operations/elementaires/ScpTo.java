@@ -1,4 +1,4 @@
-package lasselle.ssh.operations.elementaires;
+package io.bytes.fullstack.ssh.operations.elementaires;
 
 import com.jcraft.jsch.*;
 import java.awt.*;
@@ -13,40 +13,10 @@ import java.io.*;
  * @author ezy
  *
  */
-public class JiblScpTo {
-	
-	/**
-	 * effectue la copie que je souhaite faire
-	 * @param deCeFichier
-	 * @param AcetteAdresseIP
-	 * @param AvecCeUser
-	 * @param AvecCeMotdepasse
-	 */
-	public static void faisCopie(String deCeFichier, String nomDuFichierWarSeul, String AcetteAdresseIP, String AvecCeUser, String AvecCeMotdepasse) {
-		// String[] tableauArgs = {"nomfichierAcopier", "user@remotehost:nomfinaldufichierCopie"};
-		// même nom de fichier  en résultat de copie
-		String nomfinaldufichierCopie = nomDuFichierWarSeul;
-		String[] tableauArgs = {deCeFichier, AvecCeUser + "@"+AcetteAdresseIP+":" + nomfinaldufichierCopie};
-		JiblScpTo.Executer(tableauArgs, AvecCeMotdepasse);
-	}
-	/**
-	 * Anciennement: public static void main(String[] arg)
-	 * 
-	 * Donc, maintenant:
-	 * 
-	 * String[] tableauArgs = {"file1", "user@remotehost:file2"};
-	 * JiblScpTo.Executer(tableauArgs, "laur1@ne");
-	 * // tableauArgs = {"file1", "user@remotehost:file2"} Correspond à:
-	 * // 	# ligne de commande shell ou MS DOS
-	 * //	  [java ScpTo file1 user@remotehost:file2]
-	 * @param arg
-	 */
-	private static void Executer(String[] arg, String motdepasse) {
-		
-		
-		
+public class ScpTo {
+	public static void main(String[] arg) {
 		if (arg.length != 2) {
-			System.err.println("usage: java ScpTo file1 user@remotehost:file2"); /// coorespond à appeler main avec le tableau // tableauArgs = {"ScpTo", "file1", "user@remotehost:file2"}
+			System.err.println("usage: java ScpTo file1 user@remotehost:file2");
 			System.exit(-1);
 		}
 
@@ -60,30 +30,10 @@ public class JiblScpTo {
 			String rfile = arg[1].substring(arg[1].indexOf(':') + 1);
 
 			JSch jsch = new JSch();
-			System.out.println(" +++++++++++++ JIBL VERIF : user >> " + user);
-			System.out.println(" +++++++++++++ JIBL VERIF : host >> " + host);
-//			System.out.println(" +++++++++++++ JIBL VERIF : CCC" + CCC);
-//			System.out.println(" +++++++++++++ JIBL VERIF : CCC" + CCC);
-			
-//			jsch.setKnownHosts(filename);
-//			jsch.se
 			Session session = jsch.getSession(user, host, 22);
-			// rajout jibl
-			session.setPassword(motdepasse);
-//			String userconfigAvant = session.getConfig("user");
-//			String hostconfigAvant = session.getConfig("host");
-//			session.getUserName();
-//			session.getHost();
-//			session.setHost(host);
-//			session.setConfig("StrictHostKeyChecking", "no");
-			
-//			java.util.Properties configSansCheckHostKey = new java.util.Properties(); 
-//			configSansCheckHostKey.put("StrictHostKeyChecking", "no");
-//			session.setConfig(configSansCheckHostKey);
-			
 
 			// username and password will be given via UserInfo interface.
-			UserInfo ui = new JiblUserInfo(motdepasse);
+			UserInfo ui = new MyUserInfo();
 			session.setUserInfo(ui);
 			session.connect();
 
@@ -93,8 +43,7 @@ public class JiblScpTo {
 			String command = "scp " + (ptimestamp ? "-p" : "") + " -t " + rfile;
 			Channel channel = session.openChannel("exec");
 			((ChannelExec) channel).setCommand(command);
-			
-//			channel.setInputStream(null);
+
 			// get I/O streams for remote scp
 			OutputStream out = channel.getOutputStream();
 			InputStream in = channel.getInputStream();
@@ -196,48 +145,90 @@ public class JiblScpTo {
 		return b;
 	}
 
-	/**
-	 * Tous les prompts doivent retrouner "true" pour que l'exécution se fasse sans interactivité à l'utilisateur.
-	 * Le mot de passe doit être fixé dans 
-	 * @author ezy
-	 *
-	 */
-	public static class JiblUserInfo implements UserInfo/*, UIKeyboardInteractive */{
-//		public JiblUserInfo() {
-//			super();
-//		}
-		public JiblUserInfo(String motdepasse) {
-			super();
-			this.passwd = motdepasse;
-		}
-		
+	public static class MyUserInfo implements UserInfo, UIKeyboardInteractive {
 		public String getPassword() {
 			return passwd;
 		}
 
 		public boolean promptYesNo(String str) {
-			return false;
+			Object[] options = { "yes", "no" };
+			int foo = JOptionPane.showOptionDialog(null, str, "Warning", JOptionPane.DEFAULT_OPTION,
+					JOptionPane.WARNING_MESSAGE, null, options, options[0]);
+			return foo == 0;
 		}
 
 		String passwd;
+		JTextField passwordField = (JTextField) new JPasswordField(20);
 
 		public String getPassphrase() {
 			return null;
 		}
 
 		public boolean promptPassphrase(String message) {
-			return false;
+			return true;
 		}
 
 		public boolean promptPassword(String message) {
-			return false;
+			Object[] ob = { passwordField };
+			int result = JOptionPane.showConfirmDialog(null, ob, message, JOptionPane.OK_CANCEL_OPTION);
+			if (result == JOptionPane.OK_OPTION) {
+				passwd = passwordField.getText();
+				return true;
+			} else {
+				return false;
+			}
 		}
 
 		public void showMessage(String message) {
+			JOptionPane.showMessageDialog(null, message);
 		}
 
+		final GridBagConstraints gbc = new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.NORTHWEST,
+				GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0);
+		private Container panel;
 
+		public String[] promptKeyboardInteractive(String destination, String name, String instruction, String[] prompt,
+				boolean[] echo) {
+			panel = new JPanel();
+			panel.setLayout(new GridBagLayout());
 
+			gbc.weightx = 1.0;
+			gbc.gridwidth = GridBagConstraints.REMAINDER;
+			gbc.gridx = 0;
+			panel.add(new JLabel(instruction), gbc);
+			gbc.gridy++;
 
+			gbc.gridwidth = GridBagConstraints.RELATIVE;
+
+			JTextField[] texts = new JTextField[prompt.length];
+			for (int i = 0; i < prompt.length; i++) {
+				gbc.fill = GridBagConstraints.NONE;
+				gbc.gridx = 0;
+				gbc.weightx = 1;
+				panel.add(new JLabel(prompt[i]), gbc);
+
+				gbc.gridx = 1;
+				gbc.fill = GridBagConstraints.HORIZONTAL;
+				gbc.weighty = 1;
+				if (echo[i]) {
+					texts[i] = new JTextField(20);
+				} else {
+					texts[i] = new JPasswordField(20);
+				}
+				panel.add(texts[i], gbc);
+				gbc.gridy++;
+			}
+
+			if (JOptionPane.showConfirmDialog(null, panel, destination + ": " + name, JOptionPane.OK_CANCEL_OPTION,
+					JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
+				String[] response = new String[prompt.length];
+				for (int i = 0; i < prompt.length; i++) {
+					response[i] = texts[i].getText();
+				}
+				return response;
+			} else {
+				return null; // cancel
+			}
+		}
 	}
 }

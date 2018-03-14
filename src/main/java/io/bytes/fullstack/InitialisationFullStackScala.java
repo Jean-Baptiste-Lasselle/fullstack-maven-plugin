@@ -1,4 +1,4 @@
-package lasselle.deployeur; // lasselle.deployeur.InitialisationFullStackScala
+package io.bytes.fullstack; // lasselle.deployeur.InitialisationFullStackScala
 
 import java.io.File;
 import java.io.IOException;
@@ -22,7 +22,7 @@ import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.transport.PushResult;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 
-import lasselle.ssh.operations.elementaires.JiblExec;
+import io.bytes.fullstack.ssh.operations.elementaires.JiblExec;
 
 /**
  * TODO: Après avoir généré le project maven à partir de l'archetype maven 'fullstack-scala-archetype' (à crééer et versionner avec un repo github), Ce goal:

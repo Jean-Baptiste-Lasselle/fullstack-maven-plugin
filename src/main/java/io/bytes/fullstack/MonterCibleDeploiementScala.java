@@ -1,4 +1,4 @@
-package lasselle.deployeur;
+package io.bytes.fullstack;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,17 +27,24 @@ import org.eclipse.jgit.transport.PushResult;
 import org.eclipse.jgit.transport.URIish;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 
-import lasselle.ssh.operations.elementaires.JiblExec;
-import lasselle.ssh.operations.elementaires.JiblExecSansFin;
+import io.bytes.fullstack.ssh.operations.elementaires.JiblExec;
+import io.bytes.fullstack.ssh.operations.elementaires.JiblExecSansFin;
 
 //import lasselle.ssh.operations.elementaires.JiblExec;
 /**
- * Une recette de déploiement de l'applciation Scala, à exécuter après avoir exécuté le goal [deployeur:provision-scala] cf. {@see MonterCibleDeploiementScala}
+ * Une reectted e déploiement vraiment nulle:
+ * Tout ce que 'lon fait, c'est invoquer la recette de déploiement:
  * 
- * Ce goal supprime la version précédente de l'application, pour déployer et démarrer la nouvelle version de l'application
  * 
- *  
- * Tout ce que ce goal fait, c'est exécuter [recette-deploiement-application-scala.sh]
+ * export PROVISIONNING_HOME=$HOME/provisionning-scala ; rm -rf $PROVISIONNING_HOME
+ * mkdir -p $PROVISIONNING_HOME/recettes-operations  
+ * git clone https://github.com/Jean-Baptiste-Lasselle/lauriane $PROVISIONNING_HOME/recettes-operations
+ * sudo chmod +x $PROVISIONNING_HOME/recettes-operations/monter-cible-deploiement-scala.sh
+ * cd $PROVISIONNING_HOME/recettes-operations
+ * ./monter-cible-deploiement-scala.sh
+ * 
+ * 
+ * 
  * ********************************************************************************************************************************
  * Récaitualtif des paramètres:
  * 
@@ -78,15 +85,14 @@ import lasselle.ssh.operations.elementaires.JiblExecSansFin;
  * 
  * 
  * 
- * 
  * ********************************************************************************************************************************
  * 
  * 
  * @author Jean-Baptiste Lasselle
  *
  */
-@Mojo(name = "deploy-scala-app")
-public class DeployerApplicationScala extends AbstractMojo implements ComposantDePipeLineScala {
+@Mojo(name = "provision-scala")
+public class MonterCibleDeploiementScala extends AbstractMojo {
 
 	/**
 	 * ********************************************************************************************************************************
@@ -96,14 +102,7 @@ public class DeployerApplicationScala extends AbstractMojo implements ComposantD
 
 	@Parameter(alias = "repertoire-code-scala", property = "repertoire-code-scala", required = true, defaultValue = "scala")
 	String nomRepertoireScala = null;
-	
-	/**
-	 * Permet à l'utilisateur du plugin de préciser une liste de valeurs à passer à l'exécution de l'applciation Scala
-	 * 
-	 *  <exec-args-scala-app></exec-args-scala-app>
-	 */
-	@Parameter(alias = "exec-args-scala-app", property = "exec-args-scala-app", required = false, defaultValue = "")
-	String execArgsScalaApp = null;
+
 	/**
 	 * Pas de valeur par défaut, ainsi, si pointe vers null, alors cela signifie que le déplpoiement ne doit pas se faire dans un conteneur. 
 	 */
@@ -124,7 +123,7 @@ public class DeployerApplicationScala extends AbstractMojo implements ComposantD
 	String ops_lx_userpwd = null;
 
 	/**
-	 * Ce plugin permet de déployer une application scala dont le code source se
+	 * Ce plugin permet de déployer uen application scala dont le code source se
 	 * trouve versioné par le repo de'URL
 	 * {@see DeploiementScala#URL_REPO_CODE_SOURCE_APP_SCALA}
 	 * 
@@ -134,6 +133,19 @@ public class DeployerApplicationScala extends AbstractMojo implements ComposantD
 	private String URL_REPO_CODE_SOURCE_APP_SCALA;
 	@Parameter(alias = "nom-repo-git-app-scala", property = "nom-repo-git-app-scala", defaultValue = "siteweb-usinelogicielle.com")
 	private String NOM_REPO_CODE_SOURCE_APP_SCALA; // lauriane-deploiement
+
+	/**
+	 * Ce plugin utilise un collaborateur: un repo GIT qui permet le transfert de
+	 * l'artefact à déployer avec Github. Un repo Gitlab interne peut aussi être
+	 * employé.
+	 */
+	@Parameter(alias = "url-repo-git-deploiements", property = "url-repo-git-deploiements", defaultValue = "https://github.com/Jean-Baptiste-Lasselle/deploiement-usine-logicielle.com")
+	private String URL_REPO_GIT_ASSISTANT_DEPLOIEMENTS;
+	/**
+	 * TODO: Pourra être déprécié et on préfèrera l'utilsiation  de {@see DeploiementScala#repertoireAppScalaDsCible }
+	 */
+	@Parameter(alias = "nom-repo-git-deploiements", property = "nom-repo-git-deploiements", defaultValue = "deploiement-usine-logicielle.com")
+	private String NOM_REPO_GIT_ASSISTANT_DEPLOIEMENTS; // lauriane-deploiement
 
 	/**
 	 * L'opérateur git qui va procéder aux opérations sur le repo (assistant) de deploiement
@@ -211,54 +223,40 @@ public class DeployerApplicationScala extends AbstractMojo implements ComposantD
 		 * sécurité ne soient jamais présentes dans le référentiel de versionning du pom.xml
 		 */
 		this.demanderMotDePasseRepoGitCodeSource();
-//		this.demanderMotDePasseRepoGitAssistantDeploiements();
+		this.demanderMotDePasseRepoGitAssistantDeploiements();
 		/**
+		 * TODO: Non, je sais, il fait en réalité intiialiser le code source de la recette de montée de la cible de déploiement.
+		 * Plus conceptuellement, il s'agit là de "charrger", dsans notre cycle de développement, une brique du "stack" déployé. 
 		 * 1. Initialiser le positionnement de version du code source de l'app. dans le répertoire {@see DeploiementScala#repertoireScala}
 		 */
 		this.initialiserCodeSource();
 		/**
+		 * TODO: Non, je sais, en réalité, c'est le Commit And Push du code source de la recette de déploiement, qu'il faut ici faire, et non du code sourtce de l'applciartion Scala
 		 * 2.Je fais le commit and push vers le repo référentiel de versionning du code source de l'application Scala
 		 *  
 		 */
-		
 		this.faireCommitAndPushCodeSource();
 		
 		/**
 		 * 3. Je fais le commit and push vers le repo référentiel de versionning des déploiements de l'applciations Scala
+		 * TODO: Non, je sais, en réalité, c'est le Commit And Push du code source de la recette de déploiement, qu'il faut ici faire, et non du code sourtce de l'applciartion Scala
 		 */
-//		this.faireCommitAndPushDeploiement();
-		JiblExec.executeCetteCommande(" echo \"DEPLOY SCALA \\>\\> PRESSEZ LA TOUCHE ENTREE DE VOTRE CLAVIER POUR DEMARRER LE DEPLOIEMENT DE L'APPLICATION SCALA\";", adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
+		this.faireCommitAndPushDeploiement();
 		/**
-		 * 4. Si un process nommé "software-factory" existe, je le stoppe, pour le re-démarrer
-		 * Cela me permet de recommencer " de zéro" à partir de la nouvelle version de code.
-		 */
-		String URI_REPO_RECETTES = "https://github.com/Jean-Baptiste-Lasselle/lauriane";
-		String nomFichierTemporaire = "lesnumerospidsbt";
-		JiblExec.executeCetteCommande("rm -f ./" + nomFichierTemporaire + ";", adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
-		JiblExec.executeCetteCommande("ps -ef | grep '[s]oftware-factory'| awk '{print $2}' >> " + nomFichierTemporaire + ";", adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
-		JiblExec.executeCetteCommande("while read pidprocesssbt; do  kill -9 $pidprocesssbt; done < " + nomFichierTemporaire + ";", adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
-		JiblExec.executeCetteCommande("rm -f ./" + nomFichierTemporaire + ";", adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
-		/**
-		 * 5. Avec JSch je réalise l'exécution de la recette de montée de la cible de déploiement
+		 * 4. Avec JSch je réalise l'exécution de la recette de montée de la cible de déploiement
 		 * 
 		 *  => Très important à noter:
 		 *  
 		 * TODO: l'utilisateur linux qui doit éxécuter cette recette de déploiement est l'utilisateur "comissioner".
 		 * Ce doit être un utiloisateur différent de l'utilisateur linux  que le deployeur-plugin utilise.
 		 */
-		String nomRepertoireOperations = "$HOME/deploiements-app-scala";
-		JiblExec.executeCetteCommande("rm -rf " + nomRepertoireOperations, adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
-		JiblExec.executeCetteCommande("mkdir -p " + nomRepertoireOperations, adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
-//		JiblExec.executeCetteCommande("cp " + nomRepertoireOperations, adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
 		
-		
-		JiblExec.executeCetteCommande("git clone \"" + URI_REPO_RECETTES + "\" " + nomRepertoireOperations + "/ ;", adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
-		JiblExec.executeCetteCommande("chmod +x " + nomRepertoireOperations + "/recette-deploiement-application-scala.sh;", adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
-		// J'exécute la recette de déploiement spécifique à l'OS de la cible de déploiement.
-		// Je dois exécuter "sans fin", parce que le process s'exéctant suite à la commande sbt ~run ne se termine jamais.
-		JiblExec.executeCetteCommande(" echo \"DEPLOY SCALA - FIN\";", adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
-		JiblExecSansFin.executeCetteCommande("pwd;" + nomRepertoireOperations + "/recette-deploiement-application-scala.sh " + REPERTOIRE_PROCHAIN_BUILD + " " + this.repertoireAppScalaDsCible + " " + this.execArgsScalaApp + ";", adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
-		
+		JiblExec.executeCetteCommande("rm -rf $HOME/provisionning-scala", adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
+		JiblExec.executeCetteCommande("mkdir -p $HOME/provisionning-scala", adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
+		JiblExec.executeCetteCommande("git clone https://github.com/Jean-Baptiste-Lasselle/lauriane $HOME/provisionning-scala", adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
+		JiblExec.executeCetteCommande("chmod +x $HOME/provisionning-scala/monter-cible-deploiement-scala.sh", adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
+		JiblExec.executeCetteCommande("export VOYONS=savaleurvoyons; echo $VOYONS;", adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
+		JiblExec.executeCetteCommande("$HOME/provisionning-scala/monter-cible-deploiement-scala.sh " + this.URL_REPO_CODE_SOURCE_APP_SCALA, adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
 		/**
 		 * 6. Je fais un petit affichage récapitulatif
 		 * 
@@ -266,7 +264,19 @@ public class DeployerApplicationScala extends AbstractMojo implements ComposantD
 		this.afficherRecapitulatif();
 		
 	}
-
+	/**
+	 * Pour ne pas écrire de mot de passe dans la configuration du plugin
+	 * TODO: évolution qui permet au développeur de gérer les credentials utilisés par le plugin, et d'intégrer cette gestion à des outils de gestions globaux système.
+	 * @return 
+	 * @throws MojoExecutionException lorsque le mot de passe saisi est null ou la chaîne de caractères vide
+	 */
+	private void demanderMotDePasseRepoGitAssistantDeploiements() throws MojoExecutionException {
+//		if (ops_git_scm_userpwd != null) { // mais je ne veux PAS que 
+//			
+//		}
+		this.ops_git_userpwd = this.demanderMotDePassePrRepoGit(this.ops_git_username, this.URL_REPO_GIT_ASSISTANT_DEPLOIEMENTS);
+	}
+	
 	/**
 	 * Pour ne pas écrire de mot de passe dans la configuration du plugin
 	 * TODO: évolution qui permet au développeur de gérer les credentials utilisés par le plugin, et d'intégrer cette gestion à des outils de gestions globaux système.
@@ -363,6 +373,8 @@ public class DeployerApplicationScala extends AbstractMojo implements ComposantD
 		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
 		System.out.println(" +++	L'appliscala est disponible à l'url: [http://" + this.adresseIPcibleDeploiement + ":" + this.numeroPortSrvScala);
 		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
+		System.out.println(" +++    L'artefact déployé est la dernière version de la branche \"master\\\" du repo : [" + this.URL_REPO_GIT_ASSISTANT_DEPLOIEMENTS + "] ");
+		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
 		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
 		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
 		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
@@ -371,6 +383,12 @@ public class DeployerApplicationScala extends AbstractMojo implements ComposantD
 		
 	}
 
+	/**
+	 * 
+	 * TODO: Non, je sais, en réalité, c'est le code source de la recette de déploiement, qu'il faut initialiser, et non 
+	 * le code sourtce de l'application Scala
+	 * @throws MojoExecutionException
+	 */
 	private void initialiserCodeSource() throws MojoExecutionException {
 		
 		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
@@ -592,8 +610,172 @@ public class DeployerApplicationScala extends AbstractMojo implements ComposantD
 		 */
 //		this.synchroniserRepoLocalExistantCodeSourceScala();
 	}
-
+	
 	/**
+	 * TODO: Non, je sais, en réalité, c'est le Commit And Push du code source de la recette de déploiement, qu'il faut ici faire, et non du code sourtce de l'applciartion Scala
+	 * 
+	 * Réalise le versionning de l'artefact de déploieent (le truc qui est déployé)
+	 * dans le repo git assistant des déploieemnts
+	 * 
+	 * Avec JGit
+	 * 4. Puis je copie dans le répertoire "${project.build.directory}/deploiement-scala/compagnon"
+	 * 		Pour cela, je fais:
+	 *      =>  le init du repo git déploiements app dans "${project.build.directory}/tempmvnautobuild"
+	 *      =>  le git add de tous les fichiers dans "${project.build.directory}/tempmvnautobuild"
+	 *          pour ce add de tous les fichiers, essayer:
+	 *          Git monRepoGitAmoi = blabla...;
+	 *          monRepoGitAmoi.add().addFilepattern(".").call();
+	 *      =>  le git commit and push vers le repo git déploiements app
+	 *      
+	 *      
+	 *      TODO: je n'ai pâs encore implémenté cela....
+	 * 
+	 * @throws MojoExecutionException lorsque le build doit être interrompu à cause d'un problème au commit & push.
+	 */
+	private void faireCommitAndPushDeploiement() throws MojoExecutionException {
+		String cheminRepoTemporaire = this.cheminRepBuildMaven + "/tempdeployeurscalawkdir";
+		String cheminCopieSrcIntermediaire = this.cheminRepBuildMaven + "/tempdeployeurscalaopdir";
+		String cheminPointGitDsRepCopieSrcIntermediaire = this.cheminRepBuildMaven + "/tempdeployeurscalaopdir/.git";
+		
+		File repertoireCopieSrcIntermediaire = new File(cheminCopieSrcIntermediaire);
+		File pointGitDsRepCopieSrcIntermediaire = new File(cheminPointGitDsRepCopieSrcIntermediaire);
+		File repertoireRepoTemporaire = new File(cheminRepoTemporaire);
+		// je détruis repertoireRepoTemporaire, et le re-créée
+		StringBuilder verifDEBUG = new StringBuilder();
+		String sautLigne = System.getProperty("line.separator");
+		
+		verifDEBUG.append(" [verifDEBUG] :  valeur AVANT delete [repertoireRepoTemporaire.exists()=" + repertoireRepoTemporaire.exists() + "] ");
+		verifDEBUG.append(sautLigne);
+		verifDEBUG.append(" [verifDEBUG] :  valeur AVANT delete [ccc=" + repertoireRepoTemporaire.exists() + "] ");
+		verifDEBUG.append(sautLigne);
+		try {
+			if (repertoireRepoTemporaire.exists()) {
+				FileUtils.forceDelete(repertoireRepoTemporaire);
+			}
+		} catch (IOException e2) {
+			
+			System.out.println(" [ERRREUUURR]  JIBL + pb au delete du répertoire du repo [" + cheminRepoTemporaire  + "]");
+			e2.printStackTrace();
+		}
+		boolean AETECREE = repertoireRepoTemporaire.mkdirs();
+		
+		verifDEBUG.append(" [verifDEBUG] :  valeur APRES delete [repertoireRepoTemporaire.exists()=" + repertoireRepoTemporaire.exists() + "] ");
+		verifDEBUG.append(sautLigne);
+		verifDEBUG.append(" [verifDEBUG] :  valeur APRES delete [ccc=" + repertoireRepoTemporaire.exists() + "] ");
+		verifDEBUG.append(sautLigne);
+		System.out.println(verifDEBUG);
+		
+		String msgINFOcreationDirRepo = "";
+		if (AETECREE) {
+			msgINFOcreationDirRepo = " JIBL + le Repertoire de repo a été créé ";
+		} else {
+			msgINFOcreationDirRepo = "JIBL + le Repertoire de repo N'A PAS été créé";
+		}
+		System.out.println(msgINFOcreationDirRepo );
+
+		// Le repo Git assistant des déploiements
+		Git repoGitDeploiementsAppliScala = null;
+		// repCodeSrcScala
+		// => GIT CLONE
+//		String URLduREPO = this.URL_REPO_GIT_ASSISTANT;
+		try {
+			CloneCommand cloneCommand = Git.cloneRepository();
+			cloneCommand.setDirectory(repertoireRepoTemporaire);
+			cloneCommand.setURI(this.URL_REPO_GIT_ASSISTANT_DEPLOIEMENTS);
+			cloneCommand.setCredentialsProvider(
+					new UsernamePasswordCredentialsProvider(this.ops_git_username, this.ops_git_userpwd));
+//			this.repoGitLocalDeploiementScala = cloneCommand.call();
+			repoGitDeploiementsAppliScala = cloneCommand.call();
+			this.repoGitLocalDeploiementScala = repoGitDeploiementsAppliScala;
+			// monrepogit = Git.init().setDirectory(repoDIR).call();
+		} catch (IllegalStateException e) {
+			throw new MojoExecutionException(" ERREUR AU GIT CLONE  DANS  \"" + cheminRepoTemporaire + "\" ", e);
+//			System.out.println(" ERREUR AU GIT CLONE DANS  \"" + cheminRepoTemporaire + "\" ");
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+		} catch (GitAPIException e) {
+			
+			throw new MojoExecutionException(" ERREUR AU GIT CLONE  DANS  \"" + cheminRepoTemporaire + "\" ", e);
+//			System.out.println(" ERREUR AU GIT CLONE  DANS  \"" + cheminRepoTemporaire + "\" ");
+//			// TODO Auto-generated catch bloc
+//			e.printStackTrace();
+		}
+		
+		// => COPIE ARTEFACT DEPLOIEMENT DANS REPO LOCAL : je copie le
+		//    source scala édité dans [this.repertoireScala], vers le
+		//    répertoire  repertoireRepoTemporaire
+		File aCopier = new File(this.repertoireScala);
+		
+		try {
+			boolean preserveFileDate = true;
+			
+			org.apache.commons.io.FileUtils.copyDirectory(aCopier, repertoireCopieSrcIntermediaire, preserveFileDate);
+			// A VERIFIIIIIIIIIIIIIIIIIIIIIIERRRRRRRRR: 
+			/**
+			 * Es-ce que cette copie, copie aussi le répertorie caché		
+			 */
+			try {
+				if (pointGitDsRepCopieSrcIntermediaire.exists()) {
+					FileUtils.forceDelete(pointGitDsRepCopieSrcIntermediaire);
+				} else {
+					System.out.println(" Aucun répertoire point GIT [" + cheminPointGitDsRepCopieSrcIntermediaire + "]  n'a été trouvé daans le répertoire intermédiaire de copie du codde source");
+				}
+			} catch (IOException e2) {
+				throw new MojoExecutionException(" [ERRREUUURR]  JIBL + pb au delete du répertoire du repo [" + pointGitDsRepCopieSrcIntermediaire  + "]", e2);
+//				System.out.println();
+			}
+			org.apache.commons.io.FileUtils.copyDirectory(repertoireCopieSrcIntermediaire, repertoireRepoTemporaire, preserveFileDate); 
+			
+		} catch (IOException e) {
+			throw new MojoExecutionException(" ERREUR [phase commit & push vers le repo assistant de déploiement] Un,e exception est survenur au cours de la copie de   [" + repertoireCopieSrcIntermediaire + "] dans [" + repertoireRepoTemporaire + "]", e);		    
+		}
+				
+		// => GIT ADD : je fais le add de tous les fichiers
+		try { /// pour ajouter tous les fichiers (soit disant)
+			DirCache index = repoGitDeploiementsAppliScala.add().addFilepattern(".").call();
+		} catch (GitAPIException e1) {
+			throw new MojoExecutionException(" Problème à l'ajout (git add) des fichiers au versionning dans le repo local " + "[" + this.repertoireScala + "]" + ", avant de faire le commit and push du code source de l'application vers son repo de versionning de code source.", e1);
+		}
+		try {
+			this.verifierLeStatutDugitRepo(this.repoGitLocalDeploiementScala);
+		} catch (NoWorkTreeException | GitAPIException e2) {
+			throw new MojoExecutionException(" Problème à la vérification du statut du repo git local utilisé pour le commit and push vers le repo de déploiement. Le repo Git local utilisé est dans le répertoire "+ "[" + cheminRepoTemporaire + "]", e2);
+		}
+		// => GIT COMMIT : je fais le commit
+		try {
+			StringBuilder messageDeCommit = new StringBuilder();
+			messageDeCommit.append("Commit du  deployeur-maven-plugin, pour déploiement de l'application ");
+			messageDeCommit.append("[" + this.URL_REPO_CODE_SOURCE_APP_SCALA + "]");
+			messageDeCommit.append(" déploiement réalisé par l'utilisateur linux \" "+ this.ops_git_username + "\" dans la cible de déploiement.");
+			RevCommit commit = repoGitDeploiementsAppliScala.commit().setMessage(messageDeCommit.toString() ).call();
+		} catch (GitAPIException e1) {
+			// TODO Auto-generated catch block
+			throw new MojoExecutionException(" Problème au COMMIT dans le repo local "+ "[" + this.repertoireScala + "]", e1);
+		}
+		
+		// => GUT PUSH :  je pousse vers le repo distant
+		Iterable<PushResult> resultatsPush = null;
+		try {
+			resultatsPush = repoGitDeploiementsAppliScala.push().setRemote(this.URL_REPO_GIT_ASSISTANT_DEPLOIEMENTS).setCredentialsProvider( new UsernamePasswordCredentialsProvider( this.ops_git_username, this.ops_git_userpwd ) ).call();
+		} catch (GitAPIException e) {
+			// TODO Auto-generated catch block
+			throw new MojoExecutionException(" Problème au PUSH du repo local " + "[" + this.repertoireScala + "]" + " vers " + "[" + this.URL_REPO_CODE_SOURCE_APP_SCALA + "]", e);
+		}
+		PushResult pushResult = resultatsPush.iterator().next();
+		org.eclipse.jgit.transport.RemoteRefUpdate.Status status = pushResult.getRemoteUpdate( "refs/heads/master" ).getStatus();
+		
+		
+		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
+		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
+		System.out.println(" +++++++++++++   RESULTAT DU PUSH vers : " + "[" + this.URL_REPO_GIT_ASSISTANT_DEPLOIEMENTS + "]" +" +++++++++++++ ");
+		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
+		System.out.println(" +++++++++++++   code retour du PUSH : " + status.toString());
+		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
+		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
+		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
+	}
+	/**
+	 * TODO: Non, je sais, en réalité, c'est le Commit And Push du code source de la recette de déploiement, qu'il faut ici faire, et non du code sourtce de l'applciartion Scala
 	 * Réalise le commit and push du code source édité, veeers le repo de code source de l'application
 	 * @throws MojoExecutionException
 	 */
@@ -647,7 +829,7 @@ public class DeployerApplicationScala extends AbstractMojo implements ComposantD
 		
 		Iterable<PushResult> resultatsPush = null;
 		try {
-			resultatsPush = repoCodeSrcAppScala.push().setRemote(this.URL_REPO_CODE_SOURCE_APP_SCALA).setCredentialsProvider( new UsernamePasswordCredentialsProvider( this.ops_scm_git_username, this.ops_scm_git_userpwd ) ).call();
+			resultatsPush = repoCodeSrcAppScala.push().setRemote(this.URL_REPO_CODE_SOURCE_APP_SCALA).setCredentialsProvider( new UsernamePasswordCredentialsProvider( this.ops_git_username, this.ops_git_userpwd ) ).call();
 		} catch (GitAPIException e) {
 			// TODO Auto-generated catch block
 			throw new MojoExecutionException(" Problème au PUSH du repo local " + "[" + this.repertoireScala + "]" + " vers " + "[" + this.URL_REPO_CODE_SOURCE_APP_SCALA + "]", e);

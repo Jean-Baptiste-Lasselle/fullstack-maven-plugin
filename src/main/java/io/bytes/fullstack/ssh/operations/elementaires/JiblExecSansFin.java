@@ -1,4 +1,4 @@
-package lasselle.ssh.operations.elementaires;
+package io.bytes.fullstack.ssh.operations.elementaires;
 
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 import com.jcraft.jsch.*;

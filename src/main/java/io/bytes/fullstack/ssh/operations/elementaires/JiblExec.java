@@ -1,4 +1,4 @@
-package lasselle.ssh.operations.elementaires;
+package io.bytes.fullstack.ssh.operations.elementaires;
 
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 import com.jcraft.jsch.*;
@@ -81,7 +81,7 @@ public class JiblExec {
 			InputStream in = channel.getInputStream();
 
 			channel.connect();
-			System.out.println(" [+deployeur] Commande SSH exécutée : [" + commandeAexecuter + "]"); // commandeAexecuter
+			System.out.println(" [+fulltstack] - [" + commandeAexecuter + "]"); // commandeAexecuter
 			channel.run();
 			byte[] tmp = new byte[1024];
 			while (true) {
@@ -93,7 +93,7 @@ public class JiblExec {
 				}
 				if (channel.isClosed()) {
 					
-					System.out.println("sortie de l'exécution SSH: [exit-status=" + channel.getExitStatus()+ "]"); // commandeAexecuter
+					System.out.println(" [+fulltstack] - [exit-status=" + channel.getExitStatus()+ "]"); // commandeAexecuter
 					
 					break;
 				}
@@ -117,7 +117,7 @@ public class JiblExec {
 	 */
 	private static void lireSortieApresExecutionCommande(Channel unCanalSSH){
 	
-		System.out.println("[DEBUT-sortie après exécution-]");
+//		System.out.println("[DEBUT-sortie après exécution-]");
 	    byte[] buffer = new byte[1024];
 	
 	    try {
@@ -150,7 +150,7 @@ public class JiblExec {
 	        e.printStackTrace();
 	    }
 	    
-	    System.out.println("[FIN-sortie après exécution-]");
+//	    System.out.println("[FIN-sortie après exécution-]");
 	
 	}
 	/**

@@ -1,4 +1,4 @@
-package lasselle.deployeur;
+package io.bytes.fullstack;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,7 +17,7 @@ import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.transport.PushResult;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 
-import lasselle.ssh.operations.elementaires.JiblExec;
+import io.bytes.fullstack.ssh.operations.elementaires.JiblExec;
 
 
 @Mojo( name = "deploie")
