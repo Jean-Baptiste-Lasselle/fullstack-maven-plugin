@@ -4,6 +4,9 @@ package io.bytes.fullstack.ssh.operations.elementaires;
 import com.jcraft.jsch.*;
 import java.awt.*;
 import javax.swing.*;
+
+import org.apache.maven.plugin.MojoExecutionException;
+
 import java.io.*;
 
 public class JiblExec {
@@ -14,13 +17,26 @@ public class JiblExec {
 	 * @param AcetteAdresseIP
 	 * @param AvecCeUser
 	 * @param AvecCeMotdepasse
+	 * @return le code de retour
 	 */
-	public static void executeCetteCommande(String commandeAexecuter, String AcetteAdresseIP, String AvecCeUser, String AvecCeMotdepasse) {
+	public static int executeCetteCommande(String commandeAexecuter, String AcetteAdresseIP, String AvecCeUser, String AvecCeMotdepasse) {
 		// String[] tableauArgs = {"user@remotehost:nomfinaldufichierCopie"}; // "Enter username@hostname"
 		String[] tableauArgs = {AvecCeUser + "@"+AcetteAdresseIP};
-		JiblExec.Executer(tableauArgs, AvecCeMotdepasse, commandeAexecuter);
+		int codeSortieExec = 1;
+		
+		codeSortieExec = JiblExec.Executer(tableauArgs, AvecCeMotdepasse, commandeAexecuter);
+
+		return codeSortieExec;
 	}
-	private static void Executer(String[] arg, String motdepasse, String commandeAexecuter) {
+	/**
+	 * Exécute la co
+	 * @param arg
+	 * @param motdepasse
+	 * @param commandeAexecuter
+	 * @return le code de retour de du process ayant exécuté la commande SSH. S'il n'est pas zéro, un problème est survenu pendant l'exécution de la commande.
+	 */
+	private static int Executer(String[] arg, String motdepasse, String commandeAexecuter) {
+		int codeSortieExec = 1; // par défaut, il y a eut un problème
 		/**
 		 * le canal de communication SSH
 		 */
@@ -92,9 +108,7 @@ public class JiblExec {
 					System.out.print(new String(tmp, 0, i));
 				}
 				if (channel.isClosed()) {
-					
-					System.out.println(" [+fulltstack] - [exit-status=" + channel.getExitStatus()+ "]"); // commandeAexecuter
-					
+					System.out.println(" [+fulltstack] - [exit-status=" + codeSortieExec + "]"); // commandeAexecuter
 					break;
 				}
 				try {
@@ -110,6 +124,7 @@ public class JiblExec {
 			// Affichage de la sortie de la sortie de la commande:
 //			lireSortieApresExecutionCommande(channel);
 		}
+		return 0;
 	}
 	/**
 	 * Pour lire une sortie de commande

@@ -82,7 +82,7 @@ public class JiblExecSansFin {
 			InputStream in = channel.getInputStream();
 
 			channel.connect();
-			System.out.println(" [+deployeur] Commande SSH exécutée : [" + commandeAexecuter + "]"); // commandeAexecuter
+			System.out.println(" [+fulltstack] Commande SSH exécutée : [" + commandeAexecuter + "]"); // commandeAexecuter
 			channel.run();
 			byte[] tmp = new byte[1024];
 			while (true) {
@@ -112,7 +112,7 @@ public class JiblExecSansFin {
 		} finally {
 			// Affichage de la sortie de la sortie de la commande:
 //			lireSortieApresExecutionCommande(channel);
-			System.out.println("[+deployeur] Stoppez l'exécution du plugin pour arrêter le serveur à distance");
+			System.out.println("[+fulltstack] Stoppez l'exécution du plugin pour arrêter le serveur à distance");
 		}
 	}
 	/**

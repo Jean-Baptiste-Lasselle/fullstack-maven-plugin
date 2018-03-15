@@ -60,8 +60,8 @@ public class JiblScpTo {
 			String rfile = arg[1].substring(arg[1].indexOf(':') + 1);
 
 			JSch jsch = new JSch();
-			System.out.println(" +++++++++++++ JIBL VERIF : user >> " + user);
-			System.out.println(" +++++++++++++ JIBL VERIF : host >> " + host);
+//			System.out.println(" +++++++++++++ JIBL VERIF : user >> " + user);
+//			System.out.println(" +++++++++++++ JIBL VERIF : host >> " + host);
 //			System.out.println(" +++++++++++++ JIBL VERIF : CCC" + CCC);
 //			System.out.println(" +++++++++++++ JIBL VERIF : CCC" + CCC);
 			

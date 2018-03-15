@@ -187,25 +187,21 @@ public class DeploiementScala extends AbstractMojo {
 		this.demanderMotDePasseRepoGitCodeSource();
 		this.demanderMotDePasseRepoGitAssistantDeploieemnts();
 		
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++++++++++++++++++	DEPLIEMENT SCALA	+++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++	         CHECK UP DES VALEURS PARAMETRES            +++");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++	VALEUR adresseIPcibleDeploiement: " + this.adresseIPcibleDeploiement + " ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++	VALEUR this.ops_lx_username: " + this.ops_lx_username + " ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++	VALEUR this.ops_lx_userpwd: " + this.ops_lx_userpwd + " ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>><<>>>>  DEBUT DU DEPLOIEMENT SCALA APP  <<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
+		System.out.println(" +++	IP Cible déploiement: " + this.adresseIPcibleDeploiement + " ");
+		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
+
+//		System.out.println(" +++	VALEUR adresseIPcibleDeploiement: " + this.adresseIPcibleDeploiement + " ");
+//		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" +++	VALEUR this.ops_lx_username: " + this.ops_lx_username + " ");
+//		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" +++	VALEUR this.ops_lx_userpwd: " + this.ops_lx_userpwd + " ");
+//		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
 		
 		
 		/**
@@ -230,11 +226,27 @@ public class DeploiementScala extends AbstractMojo {
 		// PB DEPENDANCES A TRAITER ++++ >>> Donc compatible Ubuntu Uniquement
 		// SAUF SI JE FAIS UNE AUTRE DEPEDANCE UN AUTRE REPO QUI CONTIENT LA
 		// PROCEDURE DE DEPLOIEMENT DANS CIBLE DEPLOIEMNT
-		
-		JiblExec.executeCetteCommande("sudo rm -rf "+ this.repertoireAppScalaDsCible, adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
+		int codeSortieExec = 1; // par défaut, il y a eut un problème.
+		String commande1 = "sudo rm -rf "+ this.repertoireAppScalaDsCible + ";";
+		codeSortieExec = JiblExec.executeCetteCommande(commande1, adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
+		if (codeSortieExec  != 0) {
+			
+			/**
+			 * Je ne suis
+			 */
+			throw new MojoExecutionException(" La commande SSH  " + commande1 + "]" +  " a rencontré un problème, et a retourné le code " + codeSortieExec);
+		}
 		// DAns la cibled e déploiement, le code source scala est directement déployé et compilé à la volée, sans ême avoir besoin de stopper sbt.
 		// Il suffit donc d'écraser les fichiers de la version précédente, pour la nouvelle, afin d'obtenir le changement de version
-		JiblExec.executeCetteCommande("git clone \""+ this.URL_REPO_GIT_ASSISTANT_DEPLOIEMENTS + "\" " + this.repertoireAppScalaDsCible, adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
+		String commande2 = "git clone \""+ this.URL_REPO_GIT_ASSISTANT_DEPLOIEMENTS + "\" " + this.repertoireAppScalaDsCible;
+		codeSortieExec = JiblExec.executeCetteCommande(commande2, adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
+		if (codeSortieExec  != 0) {
+			
+			/**
+			 * Je ne suis
+			 */
+			throw new MojoExecutionException(" La commande SSH  " + commande1 + "]" +  " a rencontré un problème, et a retourné le code " + codeSortieExec);
+		}
 		/**
 		 * 6. Je fais un petit affichage récapitulatif
 		 * 
@@ -289,7 +301,7 @@ public class DeploiementScala extends AbstractMojo {
 			message1.append(sautLigne);
 			message1.append(" a saisit un mot de passe null ou de longueur strictement inférieure à 1 ");
 			message1.append(sautLigne);
-			message1.append("La chaîne de caractère vide et null ne sont pas acceptés par le DEPLOYEUR-MAVEN-PLUGIN ");
+			message1.append("La chaîne de caractère vide et null ne sont pas acceptés par le FULLSTACK-MAVEN-PLUGIN ");
 			message1.append(sautLigne);
 			message1.append("en tant que mot de passe pour une authentification.");
 			message1.append(sautLigne);
@@ -310,10 +322,10 @@ public class DeploiementScala extends AbstractMojo {
 		
 		messageDeCommitUtilisateur = JOptionPane.showInputDialog("Saisissez le message de commit & push pour le code source de l'application. Si vous ne saisissez aucun message et cliquez \"OK\", un message de commit par défaut sera généré. " + " - repo: " + "[" + URL_DU_REPO + "]",
 				null);
-		if (!(messageDeCommitUtilisateur != null && messageDeCommitUtilisateur.length() >= 1)) { /// message par défaut du commit par le [deployeur-maven-plugin]
+		if (!(messageDeCommitUtilisateur != null && messageDeCommitUtilisateur.length() >= 1)) { /// message par défaut du commit par le [fulltstack-maven-plugin]
 //			StringBuilder message1 = new StringBuilder();
 			String sautLigne = System.getProperty("line.separator");
-			messageDeCommitprepapre.append("Commit du  deployeur-maven-plugin, pour déploiement de l'application ");
+			messageDeCommitprepapre.append("Commit du  fulltstack-maven-plugin, pour déploiement de l'application ");
 			messageDeCommitprepapre.append(sautLigne);
 			messageDeCommitprepapre.append("[" + this.URL_REPO_CODE_SOURCE_APP_SCALA + "]");
 			messageDeCommitprepapre.append(sautLigne);
@@ -340,38 +352,38 @@ public class DeploiementScala extends AbstractMojo {
 	 * 
 	 */
 	private void afficherRecapitulatif() {
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++	DEPLOIEMENT SCALA TERMINE	+++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
+
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>><<>>>>  DEPLOIEMENT SCALA APP TERMINE  <<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
 		System.out.println(" +++	L'application scala est disponible à l'url: [http://" + this.adresseIPcibleDeploiement + ":" + this.numeroPortSrvScala + "/eventuellementautrechoseNomContexte] ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
 		System.out.println(" +++    Votre code source scala dans le répertoire {@see DeploiementScala#repertoireScala} a été poussé vers son repo de versionning: [this.urlRepoCodeSourceAppScala] ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
 		System.out.println(" +++    L'artefact déployé est la dernière versiond ela branche maester du repo : [" + this.URL_REPO_GIT_ASSISTANT_DEPLOIEMENTS + "] ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		
 		
 	}
 
 	private void initialiserCodeSource() throws MojoExecutionException {
 		
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++	 INITIALISATION CODE SOURCE  ++++++++++++++ ");
-		System.out.println(" ++++++++++++++++	 APPLICATION SCALA   		 ++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" ++++++++++++++++	 INITIALISATION CODE SOURCE  ++++++++++++++ ");
+//		System.out.println(" ++++++++++++++++	 APPLICATION SCALA   		 ++++++++++++++ ");
+//		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
 		/**
 		 * 1. Vérifier si un code source versionné se trouve déjà dans le répertoire {@see DeploiementScala#repertoireScala}
 		 */
@@ -383,7 +395,7 @@ public class DeploiementScala extends AbstractMojo {
 			
 			
 			StringBuilder messageTerminalInitialisationCodeSource =  new StringBuilder();
-			messageTerminalInitialisationCodeSource.append("DEPLOYEUR-MAVEN-PLUGIN");
+			messageTerminalInitialisationCodeSource.append("FULLSTACK-MAVEN-PLUGIN");
 			messageTerminalInitialisationCodeSource.append(sautLigne);
 			messageTerminalInitialisationCodeSource.append(" l'initialisation du code source s'est déroulée sans exception.");
 			messageTerminalInitialisationCodeSource.append(sautLigne);
@@ -403,7 +415,7 @@ public class DeploiementScala extends AbstractMojo {
 
 			
 			StringBuilder messageTerminalNePasCloner =  new StringBuilder();
-			messageTerminalNePasCloner.append("DEPLOYEUR-MAVEN-PLUGIN");
+			messageTerminalNePasCloner.append("FULLSTACK-MAVEN-PLUGIN");
 			messageTerminalNePasCloner.append(sautLigne);
 			messageTerminalNePasCloner.append(" - Le répertoire " + "[" + this.repertoireScala + "]" + "");
 			messageTerminalNePasCloner.append(sautLigne);
@@ -425,7 +437,7 @@ public class DeploiementScala extends AbstractMojo {
 			messageTerminalNePasCloner.append(sautLigne);
 			messageTerminalNePasCloner.append("   la balise <nom-repo-git-app-scala></nom-repo-git-app-scala>  ");
 			messageTerminalNePasCloner.append(sautLigne);
-			messageTerminalNePasCloner.append("DEPLOYEUR-MAVEN-PLUGIN");
+			messageTerminalNePasCloner.append("FULLSTACK-MAVEN-PLUGIN");
 			messageTerminalNePasCloner.append(sautLigne);
 			
 			
@@ -604,9 +616,9 @@ public class DeploiementScala extends AbstractMojo {
 	 * @throws MojoExecutionException lorsque le build doit être interrompu à cause d'un problème au commit & push.
 	 */
 	private void faireCommitAndPushDeploiement() throws MojoExecutionException {
-		String cheminRepoTemporaire = this.cheminRepBuildMaven + "/tempdeployeurscalawkdir";
-		String cheminCopieSrcIntermediaire = this.cheminRepBuildMaven + "/tempdeployeurscalaopdir";
-		String cheminPointGitDsRepCopieSrcIntermediaire = this.cheminRepBuildMaven + "/tempdeployeurscalaopdir/.git";
+		String cheminRepoTemporaire = this.cheminRepBuildMaven + "/tempfulltstackscalawkdir";
+		String cheminCopieSrcIntermediaire = this.cheminRepBuildMaven + "/tempfulltstackscalaopdir";
+		String cheminPointGitDsRepCopieSrcIntermediaire = this.cheminRepBuildMaven + "/tempfulltstackscalaopdir/.git";
 		
 		File repertoireCopieSrcIntermediaire = new File(cheminCopieSrcIntermediaire);
 		File pointGitDsRepCopieSrcIntermediaire = new File(cheminPointGitDsRepCopieSrcIntermediaire);
@@ -715,7 +727,7 @@ public class DeploiementScala extends AbstractMojo {
 		// => GIT COMMIT : je fais le commit
 		try {
 			StringBuilder messageDeCommit = new StringBuilder();
-			messageDeCommit.append("Commit du  deployeur-maven-plugin, pour déploiement de l'application ");
+			messageDeCommit.append("Commit du  fulltstack-maven-plugin, pour déploiement de l'application ");
 			messageDeCommit.append("[" + this.URL_REPO_CODE_SOURCE_APP_SCALA + "]");
 			messageDeCommit.append(" déploiement réalisé par l'utilisateur linux \" "+ this.ops_git_username + "\" dans la cible de déploiement.");
 			RevCommit commit = repoGitDeploiementsAppliScala.commit().setMessage(messageDeCommit.toString() ).call();
@@ -736,14 +748,14 @@ public class DeploiementScala extends AbstractMojo {
 		org.eclipse.jgit.transport.RemoteRefUpdate.Status status = pushResult.getRemoteUpdate( "refs/heads/master" ).getStatus();
 		
 		
-		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++++++++++++   RESULTAT DU PUSH vers : " + "[" + this.URL_REPO_GIT_ASSISTANT_DEPLOIEMENTS + "]" +" +++++++++++++ ");
-		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++++++++++++   code retour du PUSH : " + status.toString());
-		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" +++++++++++++   RESULTAT DU PUSH vers : " + "[" + this.URL_REPO_GIT_ASSISTANT_DEPLOIEMENTS + "]" +" +++++++++++++ ");
+//		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" +++++++++++++   code retour du PUSH : " + status.toString());
+//		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
 	}
 	/**
 	 * Réalise le commit and push du code source édité, veeers le repo de code source de l'application
@@ -781,7 +793,7 @@ public class DeploiementScala extends AbstractMojo {
 			this.verifierLeStatutDugitRepo(this.repoGitLocalCodeSourceScala);
 		} catch (NoWorkTreeException | GitAPIException e2) {
 //			e2.printStackTrace();
-			throw new MojoExecutionException(" Un problème est survenu lorsquele deployeur plugina  essayé de vérifier le status du repo Git versionnant le code source de l'application Scala.", e2);
+			throw new MojoExecutionException(" Un problème est survenu lorsquele fulltstack plugina  essayé de vérifier le status du repo Git versionnant le code source de l'application Scala.", e2);
 		}
 
 		// => je fais le commit
@@ -808,23 +820,20 @@ public class DeploiementScala extends AbstractMojo {
 		org.eclipse.jgit.transport.RemoteRefUpdate.Status status = pushResult.getRemoteUpdate( "refs/heads/master" ).getStatus();
 		
 		
-		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++++++++++++   RESULTAT DU PUSH vers : " + "[" + this.URL_REPO_CODE_SOURCE_APP_SCALA + "]" +" +++++++++++++ ");
-		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++++++++++++   code retour du PUSH : " + status.toString());
-		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++++++++++++   commit id : " + commit.getId());
-		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++++++++++++   commit time : " + commit.getCommitTime());
-		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++++++++++++   commit message : " + commit.getShortMessage());
-		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
-				
-		
-		;
-		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" +++++++++++++   RESULTAT DU PUSH vers : " + "[" + this.URL_REPO_CODE_SOURCE_APP_SCALA + "]" +" +++++++++++++ ");
+//		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" +++++++++++++   code retour du PUSH : " + status.toString());
+//		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" +++++++++++++   commit id : " + commit.getId());
+//		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" +++++++++++++   commit time : " + commit.getCommitTime());
+//		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" +++++++++++++   commit message : " + commit.getShortMessage());
+//		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
 	}
 	
 	/**
@@ -985,7 +994,7 @@ public class DeploiementScala extends AbstractMojo {
 	 */
 	public static class RepoCodeSourceAbsentException extends RepoAbsentException {
 
-		private static String MESSAGE = "Le repo de code source Scala n'a pas été touvé dans le répertoire que vous avez précisé dans votre pom.xml, pour configurer le DEPLOYEUR plugin dans la balise <repertoire-code-scala></repertoire-code-scala>.";
+		private static String MESSAGE = "Le repo de code source Scala n'a pas été touvé dans le répertoire que vous avez précisé dans votre pom.xml, pour configurer le FULLSTACK plugin dans la balise <repertoire-code-scala></repertoire-code-scala>.";
 
 		public RepoCodeSourceAbsentException() {
 			super();

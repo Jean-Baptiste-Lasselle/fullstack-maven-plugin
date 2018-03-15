@@ -32,7 +32,7 @@ import io.bytes.fullstack.ssh.operations.elementaires.JiblExecSansFin;
 
 //import lasselle.ssh.operations.elementaires.JiblExec;
 /**
- * Une recette de déploiement de l'applciation Scala, à exécuter après avoir exécuté le goal [deployeur:provision-scala] cf. {@see MonterCibleDeploiementScala}
+ * Une recette de déploiement de l'applciation Scala, à exécuter après avoir exécuté le goal [fulltstack:provision-scala] cf. {@see MonterCibleDeploiementScala}
  * 
  * Ce goal supprime la version précédente de l'application, pour déployer et démarrer la nouvelle version de l'application
  * 
@@ -185,15 +185,13 @@ public class DeployerApplicationScala extends AbstractMojo implements ComposantD
 	public void execute() throws MojoExecutionException, MojoFailureException {
 
 		
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++  MONTEE CIBLE DEPLOIEMENT SCALA	+++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++	IP Cible déploiement: " + this.adresseIPcibleDeploiement + " ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>DEBUT<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>  PROVISION CIBLE DEPLOIEMENT SCALA  <<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>	IP Cible déploiement: " + this.adresseIPcibleDeploiement + " ");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
 		
 
 		/**
@@ -212,43 +210,123 @@ public class DeployerApplicationScala extends AbstractMojo implements ComposantD
 		 */
 		
 		this.faireCommitAndPushCodeSource();
-		
+		int codeSortieExec = 1; // par défaut, il y a eut un problème.
+
 		/**
 		 * 3. Je fais le commit and push vers le repo référentiel de versionning des déploiements de l'applciations Scala
 		 */
 //		this.faireCommitAndPushDeploiement();
+		
 		JiblExec.executeCetteCommande("# >>> PRESSEZ LA TOUCHE ENTREE DE VOTRE CLAVIER POUR DEMARRER LE DEPLOIEMENT DE L'APPLICATION SCALA <<< #", adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
+
 		/**
 		 * 4. Si un process nommé "software-factory" existe, je le stoppe, pour le re-démarrer
 		 * Cela me permet de recommencer " de zéro" à partir de la nouvelle version de code.
 		 */
 		String URI_REPO_RECETTES = "https://github.com/Jean-Baptiste-Lasselle/lauriane";
 		String nomFichierTemporaire = "lesnumerospidsbt";
-		JiblExec.executeCetteCommande("rm -f ./" + nomFichierTemporaire + ";", adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
-		JiblExec.executeCetteCommande("ps -ef | grep '[s]oftware-factory'| awk '{print $2}' >> " + nomFichierTemporaire + ";", adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
-		JiblExec.executeCetteCommande("while read pidprocesssbt; do  kill -9 $pidprocesssbt; done < " + nomFichierTemporaire + ";", adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
-		JiblExec.executeCetteCommande("rm -f ./" + nomFichierTemporaire + ";", adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
+		String commande1 = "rm -f ./" + nomFichierTemporaire + ";";
+		codeSortieExec = JiblExec.executeCetteCommande(commande1, adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
+		if (codeSortieExec   != 0) {
+			
+			
+			/**
+			 * Je ne suis
+			 */
+			throw new MojoExecutionException(" La commande SSH  " + commande1 + "]" +  " a rencontré un problème, et a retourné le code " + codeSortieExec);
+		}
+		String commande2 = "ps -ef | grep '[s]oftware-factory'| awk '{print $2}' >> " + nomFichierTemporaire + ";";
+		codeSortieExec = JiblExec.executeCetteCommande(commande2, adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
+		if (codeSortieExec   != 0) {
+			
+			
+			/**
+			 * Je ne suis
+			 */
+			throw new MojoExecutionException(" La commande SSH  " + commande2 + "]" +  " a rencontré un problème, et a retourné le code " + codeSortieExec);
+		}
+		String commande3 = "while read pidprocesssbt; do  kill -9 $pidprocesssbt; done < " + nomFichierTemporaire + ";";
+		codeSortieExec = JiblExec.executeCetteCommande(commande3, adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
+		if (codeSortieExec   != 0) {
+			
+			
+			/**
+			 * Je ne suis
+			 */
+			throw new MojoExecutionException(" La commande SSH  " + commande3 + "]" +  " a rencontré un problème, et a retourné le code " + codeSortieExec);
+		}
+		String commande4 = "rm -f ./" + nomFichierTemporaire + ";";
+		JiblExec.executeCetteCommande(commande4, adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
+		if (codeSortieExec   != 0) {
+			
+			
+			/**
+			 * Je ne suis
+			 */
+			throw new MojoExecutionException(" La commande SSH  " + commande4 + "]" +  " a rencontré un problème, et a retourné le code " + codeSortieExec);
+		}
 		/**
 		 * 5. Avec JSch je réalise l'exécution de la recette de montée de la cible de déploiement
 		 * 
 		 *  => Très important à noter:
 		 *  
 		 * TODO: l'utilisateur linux qui doit éxécuter cette recette de déploiement est l'utilisateur "comissioner".
-		 * Ce doit être un utiloisateur différent de l'utilisateur linux  que le deployeur-plugin utilise.
+		 * Ce doit être un utiloisateur différent de l'utilisateur linux  que le fulltstack-plugin utilise.
 		 */
 		String nomRepertoireOperations = "$HOME/deploiements-app-scala";
-		JiblExec.executeCetteCommande("rm -rf " + nomRepertoireOperations, adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
-		JiblExec.executeCetteCommande("mkdir -p " + nomRepertoireOperations, adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
-//		JiblExec.executeCetteCommande("cp " + nomRepertoireOperations, adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
-		
-		
-		JiblExec.executeCetteCommande("git clone \"" + URI_REPO_RECETTES + "\" " + nomRepertoireOperations + "/ ;", adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
-		JiblExec.executeCetteCommande("chmod +x " + nomRepertoireOperations + "/recette-deploiement-application-scala.sh;", adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
+		String commande5 = "rm -rf " + nomRepertoireOperations +";";
+		codeSortieExec = JiblExec.executeCetteCommande(commande5, adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
+		if (codeSortieExec   != 0) {
+			
+			
+			/**
+			 * Je ne suis
+			 */
+			throw new MojoExecutionException(" La commande SSH  " + commande5 + "]" +  " a rencontré un problème, et a retourné le code " + codeSortieExec);
+		}
+		String commande6 = "mkdir -p " + nomRepertoireOperations + ";";
+		codeSortieExec = JiblExec.executeCetteCommande(commande6, adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
+		if (codeSortieExec   != 0) {
+			
+			
+			/**
+			 * Je ne suis
+			 */
+			throw new MojoExecutionException(" La commande SSH  " + commande6 + "]" +  " a rencontré un problème, et a retourné le code " + codeSortieExec);
+		}
+		String commande7 = "git clone \"" + URI_REPO_RECETTES + "\" " + nomRepertoireOperations + "/ ;";
+		codeSortieExec = JiblExec.executeCetteCommande(commande7, adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
+		if (codeSortieExec   != 0) {
+			
+			
+			/**
+			 * Je ne suis
+			 */
+			throw new MojoExecutionException(" La commande SSH  " + commande7 + "]" +  " a rencontré un problème, et a retourné le code " + codeSortieExec);
+		}
+		String commande8 = "chmod +x " + nomRepertoireOperations + "/recette-deploiement-application-scala.sh;";
+		codeSortieExec = JiblExec.executeCetteCommande(commande8, adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
+		if (codeSortieExec   != 0) {
+			
+			
+			/**
+			 * Je ne suis
+			 */
+			throw new MojoExecutionException(" La commande SSH  " + commande8 + "]" +  " a rencontré un problème, et a retourné le code " + codeSortieExec);
+		}
 		// J'exécute la recette de déploiement spécifique à l'OS de la cible de déploiement.
-		// Je dois exécuter "sans fin", parce que le process s'exéctant suite à la commande sbt ~run ne se termine jamais.
-		JiblExec.executeCetteCommande("# >>> DEPLOIEMENT DE L'APPLICATION SCALA TERMINE AVEC SUCCES <<< #", adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
-		JiblExecSansFin.executeCetteCommande("pwd;" + nomRepertoireOperations + "/recette-deploiement-application-scala.sh " + REPERTOIRE_PROCHAIN_BUILD + " " + this.repertoireAppScalaDsCible + " " + this.execArgsScalaApp + ";", adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
-		
+		String commande9 = "pwd;" + nomRepertoireOperations + "/recette-deploiement-application-scala.sh " + REPERTOIRE_PROCHAIN_BUILD + " " + this.repertoireAppScalaDsCible + " " + this.execArgsScalaApp + ";";
+		codeSortieExec = JiblExec.executeCetteCommande(commande9, adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
+		if (codeSortieExec   != 0) {
+			
+			
+			/**
+			 * Je ne suis
+			 */
+			throw new MojoExecutionException(" La commande SSH  " + commande9 + "]" +  " a rencontré un problème, et a retourné le code " + codeSortieExec);
+		}
+
+
 		/**
 		 * 6. Je fais un petit affichage récapitulatif
 		 * 
@@ -291,7 +369,7 @@ public class DeployerApplicationScala extends AbstractMojo implements ComposantD
 			message1.append(sautLigne);
 			message1.append(" a saisit un mot de passe null ou de longueur strictement inférieure à 1 ");
 			message1.append(sautLigne);
-			message1.append("La chaîne de caractère vide et null ne sont pas acceptés par le DEPLOYEUR-MAVEN-PLUGIN ");
+			message1.append("La chaîne de caractère vide et null ne sont pas acceptés par le FULLSTACK-MAVEN-PLUGIN ");
 			message1.append(sautLigne);
 			message1.append("en tant que mot de passe pour une authentification.");
 			message1.append(sautLigne);
@@ -312,10 +390,10 @@ public class DeployerApplicationScala extends AbstractMojo implements ComposantD
 		
 		messageDeCommitUtilisateur = JOptionPane.showInputDialog("Saisissez le message de commit & push pour le code source de l'application. Si vous ne saisissez aucun message et cliquez \"OK\", un message de commit par défaut sera généré. " + " - repo: " + "[" + URL_DU_REPO + "]",
 				null);
-		if (!(messageDeCommitUtilisateur != null && messageDeCommitUtilisateur.length() >= 1)) { /// message par défaut du commit par le [deployeur-maven-plugin]
+		if (!(messageDeCommitUtilisateur != null && messageDeCommitUtilisateur.length() >= 1)) { /// message par défaut du commit par le [fulltstack-maven-plugin]
 //			StringBuilder message1 = new StringBuilder();
 			String sautLigne = System.getProperty("line.separator");
-			messageDeCommitprepapre.append("Commit du  deployeur-maven-plugin, pour déploiement de l'application ");
+			messageDeCommitprepapre.append("Commit du  fulltstack-maven-plugin, pour déploiement de l'application ");
 			messageDeCommitprepapre.append(sautLigne);
 			messageDeCommitprepapre.append("[" + this.URL_REPO_CODE_SOURCE_APP_SCALA + "]");
 			messageDeCommitprepapre.append(sautLigne);
@@ -342,35 +420,32 @@ public class DeployerApplicationScala extends AbstractMojo implements ComposantD
 	 * 
 	 */
 	private void afficherRecapitulatif() {
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++	      MONTEE CIBLE DEPLOIEMENT SCALA TERMINE     ++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++	La cible de déploiement est maintenant en service.");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++	L'appliscala est disponible à l'url: [http://" + this.adresseIPcibleDeploiement + ":" + this.numeroPortSrvScala);
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>FIN<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>  PROVISION CIBLE DEPLOIEMENT SCALA  <<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>	La cible de déploiement est maintenant en service.");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>	L'appliscala est disponible à l'url: [http://" + this.adresseIPcibleDeploiement + ":" + this.numeroPortSrvScala);
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
 		
 	}
 
 	private void initialiserCodeSource() throws MojoExecutionException {
 		
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++	 INITIALISATION CODE SOURCE  ++++++++++++++ ");
-		System.out.println(" ++++++++++++++++	 APPLICATION SCALA   		 ++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" ++++++++++++++++	 INITIALISATION CODE SOURCE  ++++++++++++++ ");
+//		System.out.println(" ++++++++++++++++	 APPLICATION SCALA   		 ++++++++++++++ ");
+//		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
 		/**
 		 * 1. Vérifier si un code source versionné se trouve déjà dans le répertoire {@see DeploiementScala#repertoireScala}
 		 */
@@ -382,7 +457,7 @@ public class DeployerApplicationScala extends AbstractMojo implements ComposantD
 			
 			
 			StringBuilder messageTerminalInitialisationCodeSource =  new StringBuilder();
-			messageTerminalInitialisationCodeSource.append("DEPLOYEUR-MAVEN-PLUGIN");
+			messageTerminalInitialisationCodeSource.append("FULLSTACK-MAVEN-PLUGIN");
 			messageTerminalInitialisationCodeSource.append(sautLigne);
 			messageTerminalInitialisationCodeSource.append(" l'initialisation du code source s'est déroulée sans exception.");
 			messageTerminalInitialisationCodeSource.append(sautLigne);
@@ -402,7 +477,7 @@ public class DeployerApplicationScala extends AbstractMojo implements ComposantD
 
 			
 			StringBuilder messageTerminalNePasCloner =  new StringBuilder();
-			messageTerminalNePasCloner.append("DEPLOYEUR-MAVEN-PLUGIN");
+			messageTerminalNePasCloner.append("FULLSTACK-MAVEN-PLUGIN");
 			messageTerminalNePasCloner.append(sautLigne);
 			messageTerminalNePasCloner.append(" - Le répertoire " + "[" + this.repertoireScala + "]" + "");
 			messageTerminalNePasCloner.append(sautLigne);
@@ -424,7 +499,7 @@ public class DeployerApplicationScala extends AbstractMojo implements ComposantD
 			messageTerminalNePasCloner.append(sautLigne);
 			messageTerminalNePasCloner.append("   la balise <nom-repo-git-app-scala></nom-repo-git-app-scala>  ");
 			messageTerminalNePasCloner.append(sautLigne);
-			messageTerminalNePasCloner.append("DEPLOYEUR-MAVEN-PLUGIN");
+			messageTerminalNePasCloner.append("FULLSTACK-MAVEN-PLUGIN");
 			messageTerminalNePasCloner.append(sautLigne);
 			
 			
@@ -619,7 +694,7 @@ public class DeployerApplicationScala extends AbstractMojo implements ComposantD
 		try {
 			this.verifierLeStatutDugitRepo(this.repoGitLocalCodeSourceScala);
 		} catch (NoWorkTreeException | GitAPIException e2) {
-			throw new MojoExecutionException(" Un problème est survenu lorsquele deployeur plugina  essayé de vérifier le status du repo Git versionnant le code source de l'application Scala.", e2);
+			throw new MojoExecutionException(" Un problème est survenu lorsquele fulltstack plugina  essayé de vérifier le status du repo Git versionnant le code source de l'application Scala.", e2);
 		}
 
 		// => je fais le commit
@@ -646,23 +721,23 @@ public class DeployerApplicationScala extends AbstractMojo implements ComposantD
 		org.eclipse.jgit.transport.RemoteRefUpdate.Status status = pushResult.getRemoteUpdate( "refs/heads/master" ).getStatus();
 		
 		
-		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++++++++++++   RESULTAT DU PUSH vers : " + "[" + this.URL_REPO_CODE_SOURCE_APP_SCALA + "]" +" +++++++++++++ ");
-		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++++++++++++   code retour du PUSH : " + status.toString());
-		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++++++++++++   commit id : " + commit.getId());
-		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++++++++++++   commit time : " + commit.getCommitTime());
-		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++++++++++++   commit message : " + commit.getShortMessage());
-		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
-				
-		
-		;
-		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" +++++++++++++   RESULTAT DU PUSH vers : " + "[" + this.URL_REPO_CODE_SOURCE_APP_SCALA + "]" +" +++++++++++++ ");
+//		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" +++++++++++++   code retour du PUSH : " + status.toString());
+//		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" +++++++++++++   commit id : " + commit.getId());
+//		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" +++++++++++++   commit time : " + commit.getCommitTime());
+//		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" +++++++++++++   commit message : " + commit.getShortMessage());
+//		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
+//				
+//		
+//		;
+//		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
 	}
 	
 	/**
@@ -823,7 +898,7 @@ public class DeployerApplicationScala extends AbstractMojo implements ComposantD
 	 */
 	public static class RepoCodeSourceAbsentException extends RepoAbsentException {
 
-		private static String MESSAGE = "Le repo de code source Scala n'a pas été touvé dans le répertoire que vous avez précisé dans votre pom.xml, pour configurer le DEPLOYEUR plugin dans la balise <repertoire-code-scala></repertoire-code-scala>.";
+		private static String MESSAGE = "Le repo de code source Scala n'a pas été touvé dans le répertoire que vous avez précisé dans votre pom.xml, pour configurer le FULLSTACK plugin dans la balise <repertoire-code-scala></repertoire-code-scala>.";
 
 		public RepoCodeSourceAbsentException() {
 			super();

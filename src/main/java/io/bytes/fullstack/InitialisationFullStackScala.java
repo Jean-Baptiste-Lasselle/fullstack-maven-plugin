@@ -1,4 +1,4 @@
-package io.bytes.fullstack; // lasselle.deployeur.InitialisationFullStackScala
+package io.bytes.fullstack; // lasselle.fulltstack.InitialisationFullStackScala
 
 import java.io.File;
 import java.io.IOException;
@@ -117,27 +117,34 @@ public class InitialisationFullStackScala extends AbstractMojo {
 
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
-
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>DEBUT<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  INITIALISATION FULLSTACK  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
 		
 		this.initialiserCodeSource();
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>FIN<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  INITIALISATION FULLSTACK  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
 	}
 
 	private void initialiserCodeSource() throws MojoExecutionException {
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++++++++++++++++++	INITIALISATION SCALA	+++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++	         CHECK UP DES VALEURS PARAMETRES            +++");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++	VALEUR adresseIPcibleDeploiement: " + this.adresseIPcibleDeploiement + " ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>DEBUT<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  INITIALISATION FULLSTACK  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>	VALEUR adresseIPcibleDeploiement: " + this.adresseIPcibleDeploiement + " ");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
 		
 		
 		/**
@@ -148,7 +155,7 @@ public class InitialisationFullStackScala extends AbstractMojo {
 			this.verifierSiRepoGitPresent();
 			// Si c'est le cas, il n'y a rien à faire.
 			StringBuilder messageTerminalInitialisationCodeSource =  new StringBuilder();
-			messageTerminalInitialisationCodeSource.append("DEPLOYEUR-MAVEN-PLUGIN");
+			messageTerminalInitialisationCodeSource.append("FULLSTACK-MAVEN-PLUGIN");
 			messageTerminalInitialisationCodeSource.append(sautLigne);
 			System.out.println(messageTerminalInitialisationCodeSource);
 			return;
@@ -166,7 +173,7 @@ public class InitialisationFullStackScala extends AbstractMojo {
 
 			
 			StringBuilder messageTerminalNePasCloner =  new StringBuilder();
-			messageTerminalNePasCloner.append("DEPLOYEUR-MAVEN-PLUGIN");
+			messageTerminalNePasCloner.append("FULLSTACK-MAVEN-PLUGIN");
 			messageTerminalNePasCloner.append(sautLigne);
 			messageTerminalNePasCloner.append(" - Le répertoire " + "[" + this.repertoireScala + "]" + "");
 			messageTerminalNePasCloner.append(sautLigne);
@@ -188,7 +195,7 @@ public class InitialisationFullStackScala extends AbstractMojo {
 			messageTerminalNePasCloner.append(sautLigne);
 			messageTerminalNePasCloner.append("   la balise <nom-repo-git-app-scala></nom-repo-git-app-scala>  ");
 			messageTerminalNePasCloner.append(sautLigne);
-			messageTerminalNePasCloner.append("DEPLOYEUR-MAVEN-PLUGIN");
+			messageTerminalNePasCloner.append("FULLSTACK-MAVEN-PLUGIN");
 			messageTerminalNePasCloner.append(sautLigne);
 			
 			
@@ -381,7 +388,7 @@ public class InitialisationFullStackScala extends AbstractMojo {
 	 */
 	private static class RepoCodeSourceAbsentException extends RepoAbsentException {
 
-		private static String MESSAGE = "Le repo de code source Scala n'a pas été touvé dans le répertoire que vous avez précisé dans votre pom.xml, pour configurer le DEPLOYEUR plugin dans la balise <repertoire-code-scala></repertoire-code-scala>.";
+		private static String MESSAGE = "Le repo de code source Scala n'a pas été touvé dans le répertoire que vous avez précisé dans votre pom.xml, pour configurer le FULLSTACK plugin dans la balise <repertoire-code-scala></repertoire-code-scala>.";
 
 		public RepoCodeSourceAbsentException() {
 			super();

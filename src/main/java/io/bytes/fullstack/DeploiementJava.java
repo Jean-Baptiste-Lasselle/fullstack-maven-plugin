@@ -85,29 +85,14 @@ public class DeploiementJava extends AbstractMojo {
 //		String SSHusername = null;
 //		String SSHuserpwd = null;
 		
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++++++++++++++++++	MON PLUGIN	+++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++	VALEUR adresseIPcibleDeploiement: " + this.adresseIPcibleDeploiement + " ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++	VALEUR SSHusername: " + this.SSHusername + " ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++	VALEUR SSHuserpwd: " + this.SSHuserpwd + " ");
-		
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++	VALEUR cheminProjet: " + this.cheminProjet + " ");
-		
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++	VALEUR cheminFichierWAR: " + this.nomFichierWAR + " ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++	VALEUR cheminProjet + \"/\" + cheminFichierWAR: " + cheminProjet + "/" + nomFichierWAR + " ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>  DEBUT DU DEPLOIEMENT JAVA WEB APP  <<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>	IP Cible déploiement: " + this.adresseIPcibleDeploiement + " ");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
 		
 //		JiblExec.executeCetteCommande("echo \"ah ok d'addaccord\">> voyons.voir ", adresseIPcibleDeploiement, SSHusername, SSHuserpwd);
 		// donc après, je n'ai qu'à exécuter mon scp en ligne de commandes tout simplement
@@ -115,17 +100,27 @@ public class DeploiementJava extends AbstractMojo {
 		copierFihierWarVersCible();
 		System.out.println(" +++	COPIE DU WAR FAITE DANS CONTENEUR " + this.nomConteneurDocker);
 		executeLeDeploiement();
-		System.out.println(" +++	DEPLOIEMENT TERMINE DANS CONTENEUR " + this.nomConteneurDocker);
-		System.out.println(" +++	++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++	Votre application est disponible à l'URL:");
-		System.out.println(" +++		[http://" + this.adresseIPcibleDeploiement + ":"+ this.numeroPortTomcat + "/" +this.urlContextPathAppli + "]");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>  FIN DU DEPLOIEMENT JAVA WEB APP  <<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>	Votre application est disponible à l'URL:");
+		System.out.println("# >>>		[http://" + this.adresseIPcibleDeploiement + ":"+ this.numeroPortTomcat + "/" +this.urlContextPathAppli + "]");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
 		
 		
 	}
 //	@Parameter(alias = "repertoire-repo-git-local", property = "repertoire-repo-git-local", defaultValue = "${project.build.directory}/tempmvnautobuild")
 	@Parameter(alias = "repertoire-repo-git-local", property = "repertoire-repo-git-local", required=true)
 	String cheminRepoGitLocalDeTravail = null;
-	private void copierFihierWarVersCible() {
+	
+	/**
+	 * 
+	 * @throws MojoExecutionException Lorsque l'une des commadnes SSH utilisées retourne un code autre que 0
+	 */
+	private void copierFihierWarVersCible() throws MojoExecutionException {
 //		JiblScpTo.faisCopie(this.cheminProjet + "/" + this.nomFichierWAR, this.nomFichierWAR, adresseIPcibleDeploiement, SSHusername, SSHuserpwd);
 //		JiblSftp.faisCopie(this.cheminProjet + "/" + this.nomFichierWAR, this.nomFichierWAR, adresseIPcibleDeploiement, SSHusername, SSHuserpwd);
 		
@@ -216,7 +211,7 @@ public class DeploiementJava extends AbstractMojo {
 //		monrepogit.remoteSetUrl(URLduREPO);
 //		monrepogit.remoteSetUrl()
 		try {
-			RevCommit commit = monrepogit.commit().setMessage( "Commit du  deployeur-maven-plugin, pour déploiement vers la cible de déploiement créée par \"lauriane\"" ).call();
+			RevCommit commit = monrepogit.commit().setMessage( "Commit du  fulltstack-maven-plugin, pour déploiement vers la cible de déploiement créée avec le goal [fullstack:provision-scala]" ).call();
 		} catch (GitAPIException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -235,14 +230,14 @@ public class DeploiementJava extends AbstractMojo {
 		org.eclipse.jgit.transport.RemoteRefUpdate.Status status = pushResult.getRemoteUpdate( "refs/heads/master" ).getStatus();
 		
 		
-		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++++++++++++   RESULTAT DU PUSH: +++++++++++++ ");
-		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(status.toString());
-		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" +++++++++++++   RESULTAT DU PUSH: +++++++++++++ ");
+//		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(status.toString());
+//		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
 		
 		
 		// 2./ je  fais le git clone du war que je veux déployer
@@ -250,20 +245,63 @@ public class DeploiementJava extends AbstractMojo {
 		//
 		// --
 		// je détruis, le repo, et le re-crrées par git clone.
-		JiblExec.executeCetteCommande("rm -rf ./"+ this.NOM_REPO_GIT_ASSISTANT, adresseIPcibleDeploiement, SSHusername, SSHuserpwd);
-		// 
-		JiblExec.executeCetteCommande("git clone \""+ this.URL_REPO_GIT_ASSISTANT + "\"", adresseIPcibleDeploiement, SSHusername, SSHuserpwd);
-	}
-	private void executeLeDeploiement() {
 		
+		int codeSortieExec = 1; // par déafaut, il y a eut un problème.
+
+		codeSortieExec = JiblExec.executeCetteCommande("rm -rf ./"+ this.NOM_REPO_GIT_ASSISTANT, adresseIPcibleDeploiement, SSHusername, SSHuserpwd);
+		if (codeSortieExec  != 0) {
+			/**
+			 * Je ne suis
+			 */
+			throw new MojoExecutionException(" La commande SSH  " + "[" + "rm -rf ./"+ this.NOM_REPO_GIT_ASSISTANT + "]" +  " a rencontré un problème, et a retourné le code " + codeSortieExec);
+		}
+		// 
+		codeSortieExec = JiblExec.executeCetteCommande("git clone \""+ this.URL_REPO_GIT_ASSISTANT + "\"" + ";", adresseIPcibleDeploiement, SSHusername, SSHuserpwd);
+		if (codeSortieExec  != 0) {
+			/**
+			 * Je ne suis
+			 */
+			throw new MojoExecutionException(" La commande SSH  " + "[" + "git clone \""+ this.URL_REPO_GIT_ASSISTANT + "\"" + ";" + "]" +  " a rencontré un problème, et a retourné le code " + codeSortieExec);
+		}
+	}
+	private void executeLeDeploiement() throws MojoExecutionException {
+		int codeSortieExec = 1;
 		// je supprime les autres war déployés
-		JiblExec.executeCetteCommande("sudo docker exec " + this.nomConteneurDocker + " /bin/bash -c \"rm -rf /usr/local/tomcat/webapps/" + this.urlSHORTContextPathAppli + "*\"", adresseIPcibleDeploiement, SSHusername, SSHuserpwd);
-		JiblExec.executeCetteCommande("sudo docker exec " + this.nomConteneurDocker + " /bin/bash -c \"rm -rf /usr/local/tomcat/webapps/" + this.urlSHORTContextPathAppli + "*.war\"", adresseIPcibleDeploiement, SSHusername, SSHuserpwd);
+		String commande1 = "sudo docker exec " + this.nomConteneurDocker + " /bin/bash -c \"rm -rf /usr/local/tomcat/webapps/" + this.urlSHORTContextPathAppli + "*\"";
+		codeSortieExec = JiblExec.executeCetteCommande(commande1, adresseIPcibleDeploiement, SSHusername, SSHuserpwd);
+		if (codeSortieExec  != 0) {
+			/**
+			 * Je ne suis
+			 */
+			throw new MojoExecutionException(" La commande SSH  " + commande1 + "]" +  " a rencontré un problème, et a retourné le code " + codeSortieExec);
+		}
+		String commande2 = "sudo docker exec " + this.nomConteneurDocker + " /bin/bash -c \"rm -rf /usr/local/tomcat/webapps/" + this.urlSHORTContextPathAppli + "*.war\"";
+		codeSortieExec = JiblExec.executeCetteCommande(commande2, adresseIPcibleDeploiement, SSHusername, SSHuserpwd);
+		if (codeSortieExec  != 0) {
+			/**
+			 * Je ne suis
+			 */
+			throw new MojoExecutionException(" La commande SSH  " + commande2 + "]" +  " a rencontré un problème, et a retourné le code " + codeSortieExec);
+		}
 		
 		// je copie le war à déployer dans le repertoire webapps
-		JiblExec.executeCetteCommande("sudo docker cp "+ this.NOM_REPO_GIT_ASSISTANT + "/"+ this.nomFichierWAR + " " + this.nomConteneurDocker + ":/usr/local/tomcat/webapps", adresseIPcibleDeploiement, SSHusername, SSHuserpwd);
+		String commande3 = "sudo docker cp "+ this.NOM_REPO_GIT_ASSISTANT + "/"+ this.nomFichierWAR + " " + this.nomConteneurDocker + ":/usr/local/tomcat/webapps";
+		codeSortieExec = JiblExec.executeCetteCommande(commande3, adresseIPcibleDeploiement, SSHusername, SSHuserpwd);
+		if (codeSortieExec  != 0) {
+			/**
+			 * Je ne suis
+			 */
+			throw new MojoExecutionException(" La commande SSH  " + commande3 + "]" +  " a rencontré un problème, et a retourné le code " + codeSortieExec);
+		}
 		// je re-démarre le  conteneur entier, au lieu d'un process dans le conteneur.
-		JiblExec.executeCetteCommande("sudo docker restart " + this.nomConteneurDocker, adresseIPcibleDeploiement, SSHusername, SSHuserpwd);
+		String commande4 = "sudo docker restart " + this.nomConteneurDocker + ";";
+		codeSortieExec = JiblExec.executeCetteCommande(commande4, adresseIPcibleDeploiement, SSHusername, SSHuserpwd);
+		if (codeSortieExec  != 0) {
+			/**
+			 * Je ne suis
+			 */
+			throw new MojoExecutionException(" La commande SSH  " + commande4 + "]" +  " a rencontré un problème, et a retourné le code " + codeSortieExec);
+		}
 		
 	}
 	

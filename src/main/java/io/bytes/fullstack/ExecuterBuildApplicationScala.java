@@ -189,14 +189,14 @@ public class ExecuterBuildApplicationScala extends AbstractMojo implements Compo
 		 */
 		this.demanderMotDePasseRepoGitCodeSource();
 		
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++++++++++++++  BUILD APPLICATION SCALA	+++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  DEBUT DU BUILD SCALA  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
 		System.out.println(" +++	IP Cible déploiement: " + this.adresseIPcibleDeploiement + " ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
+		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
 //		System.out.println(" +++	VALEUR this.ops_lx_username: " + this.ops_lx_username + " ");
 //		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
 //		System.out.println(" +++	VALEUR this.ops_lx_userpwd: " + this.ops_lx_userpwd + " ");
@@ -237,10 +237,25 @@ public class ExecuterBuildApplicationScala extends AbstractMojo implements Compo
 		String commandeDeBuild4 = " rm -rf $REPERTOIRE_PROCHAIN_BUILD ; mkdir -p $REPERTOIRE_PROCHAIN_BUILD ; cp -rf $NOM_REP_BUILD_COURANT/target/universal/stage/* $REPERTOIRE_PROCHAIN_BUILD;";
 		
 //		JiblExec.executeCetteCommande(" echo \"BUILD SCALA - \\>\\> PRESSEZ LA TOUCHE ENTREE DE VOTRE CLAVIER POUR DEMARRER LE BUILD\";", adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
-		JiblExec.executeCetteCommande("# >>> PRESSEZ LA TOUCHE ENTREE DE VOTRE CLAVIER POUR DEMARRER LE BUILD <<< #", adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
+		JiblExec.executeCetteCommande("# >>> PRESSEZ LA TOUCHE ENTREE DE VOTRE CLAVIER POUR DEMARRER LE BUILD SCALA <<< #", adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
 		
-		JiblExec.executeCetteCommande(commandeDeBuild +commandeDeBuild2 + commandeDeBuild3 +commandeDeBuild4, adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
-		JiblExec.executeCetteCommande("# >>>  FIN DU BUILD SCALA  <<< #", adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
+		int codeSortieExec = 1; // par défaut, il y a eut un problème
+		codeSortieExec = JiblExec.executeCetteCommande(commandeDeBuild +commandeDeBuild2 + commandeDeBuild3 +commandeDeBuild4, adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
+		if (codeSortieExec   != 0) {			
+			/**
+			 * Tout autre code que zéro est interprété comme un code d'erreur
+			 */
+			throw new MojoExecutionException(" La commande SSH  " + commandeDeBuild +commandeDeBuild2 + commandeDeBuild3 +commandeDeBuild4 + "]" +  " a rencontré un problème, et a retourné le code " + codeSortieExec);
+		}
+		
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  FIN DU BUILD SCALA  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		
+		
+//		JiblExec.executeCetteCommande(, adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
 		
 		
 //		JiblExec.executeCetteCommande(" echo \"Petit Test Variables ENV avec JSch JIBL (les variables d'environnement ne devraient pas survivire à la fermeture de session SSH): [NOM_REP_BUILD_COURANT=$NOM_REP_BUILD_COURANT]\"", adresseIPcibleDeploiement, this.ops_lx_username, this.ops_lx_userpwd);
@@ -302,14 +317,14 @@ public class ExecuterBuildApplicationScala extends AbstractMojo implements Compo
 	
 	private void initialiserCodeSource() throws MojoExecutionException {
 		
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++	 INITIALISATION CODE SOURCE  ++++++++++++++ ");
-		System.out.println(" ++++++++++++++++	 APPLICATION SCALA   		 ++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" ++++++++++++++++	 INITIALISATION CODE SOURCE  ++++++++++++++ ");
+//		System.out.println(" ++++++++++++++++	 APPLICATION SCALA   		 ++++++++++++++ ");
+//		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
 		/**
 		 * 1. Vérifier si un code source versionné se trouve déjà dans le répertoire {@see DeploiementScala#repertoireScala}
 		 */
@@ -563,23 +578,23 @@ public class ExecuterBuildApplicationScala extends AbstractMojo implements Compo
 		org.eclipse.jgit.transport.RemoteRefUpdate.Status status = pushResult.getRemoteUpdate( "refs/heads/master" ).getStatus();
 		
 		
-		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++++++++++++   RESULTAT DU PUSH vers : " + "[" + this.URL_REPO_CODE_SOURCE_APP_SCALA + "]" +" +++++++++++++ ");
-		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++++++++++++   code retour du PUSH : " + status.toString());
-		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++++++++++++   commit id : " + commit.getId());
-		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++++++++++++   commit time : " + commit.getCommitTime());
-		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++++++++++++   commit message : " + commit.getShortMessage());
-		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
-				
-		
-		;
-		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" +++++++++++++   RESULTAT DU PUSH vers : " + "[" + this.URL_REPO_CODE_SOURCE_APP_SCALA + "]" +" +++++++++++++ ");
+//		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" +++++++++++++   code retour du PUSH : " + status.toString());
+//		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" +++++++++++++   commit id : " + commit.getId());
+//		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" +++++++++++++   commit time : " + commit.getCommitTime());
+//		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" +++++++++++++   commit message : " + commit.getShortMessage());
+//		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
+//				
+//		
+//		;
+//		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
+//		System.out.println(" +++++++++++++++++++++++++++++++++++++++++++++++ ");
 	}
 	
 	/**
