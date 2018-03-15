@@ -194,9 +194,9 @@ public class ExecuterBuildApplicationScala extends AbstractMojo implements Compo
 		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  DEBUT DU BUILD SCALA  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
 		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
 		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
-		System.out.println(" +++	IP Cible déploiement: " + this.adresseIPcibleDeploiement + " ");
-		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
+		System.out.println("# >>>	IP Cible déploiement: " + this.adresseIPcibleDeploiement + " ");
+		System.out.println("# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< #");
 //		System.out.println(" +++	VALEUR this.ops_lx_username: " + this.ops_lx_username + " ");
 //		System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ");
 //		System.out.println(" +++	VALEUR this.ops_lx_userpwd: " + this.ops_lx_userpwd + " ");
