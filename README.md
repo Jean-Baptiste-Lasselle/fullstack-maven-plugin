@@ -133,8 +133,12 @@ Dans ce fichier, la configuration typique contient les éléments suivants:
 	</execution>
     </executions>
 # TODO: Keystore pour les mots de passe 
-Dixit cette [page](https://stackoverflow.com/questions/6243446/how-to-store-a-simple-key-string-inside-java-keystore) :
+
+
 Le but est quà chaque fois que j'utilise mon fullstack-maven-plugin, si je saisisit mon mot de passe une fois, il y a une case à cocher "se souvenir du mot de passe" pour un compte github, ou pour un couple user/host linux [user@host] dans le cas SSH. SI la case est cochée, maven se souvient du mot de passe entre deux exécutions distinctes et successives de maven.
+
+
+Dixit cette [page](https://stackoverflow.com/questions/6243446/how-to-store-a-simple-key-string-inside-java-keystore) :
 
 ```
 public static String getPasswordFromKeystore(String entry, String keystoreLocation, String keyStorePassword) throws Exception {
