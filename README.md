@@ -132,7 +132,54 @@ Dans ce fichier, la configuration typique contient les éléments suivants:
 			</configuration>
 	</execution>
     </executions>
+# TODO: Keystore pour les mots de passe 
+Dixit cette [page](https://stackoverflow.com/questions/6243446/how-to-store-a-simple-key-string-inside-java-keystore) :
+Le but est quà chaque fois que j'utilise mon fullstack-maven-plugin, si je saisisit mon mot de passe une fois, il y a une case à cocher "se souvenir du mot de passe" pour un compte github, ou pour un couple user/host linux [user@host] dans le cas SSH. SI la case est cochée, maven se souvient du mot de passe entre deux exécutions distinctes et successives de maven.
 
+```
+public static String getPasswordFromKeystore(String entry, String keystoreLocation, String keyStorePassword) throws Exception {
+
+        KeyStore ks = KeyStore.getInstance("JCEKS");
+        ks.load(null, keyStorePassword.toCharArray());
+        KeyStore.PasswordProtection keyStorePP = new KeyStore.PasswordProtection(keyStorePassword.toCharArray());
+
+        FileInputStream fIn = new FileInputStream(keystoreLocation);
+
+        ks.load(fIn, keyStorePassword.toCharArray());
+
+        SecretKeyFactory factory = SecretKeyFactory.getInstance("PBE");
+
+        KeyStore.SecretKeyEntry ske =
+                (KeyStore.SecretKeyEntry)ks.getEntry(entry, keyStorePP);
+
+        PBEKeySpec keySpec = (PBEKeySpec)factory.getKeySpec(
+                ske.getSecretKey(),
+                PBEKeySpec.class);
+
+        char[] password = keySpec.getPassword();
+
+        return new String(password);
+
+    }
+
+    public static void makeNewKeystoreEntry(String entry, String entryPassword, String keyStoreLocation, String keyStorePassword)
+            throws Exception {
+        SecretKeyFactory factory = SecretKeyFactory.getInstance("PBE");
+        SecretKey generatedSecret =
+                factory.generateSecret(new PBEKeySpec(
+                        entryPassword.toCharArray()));
+
+        KeyStore ks = KeyStore.getInstance("JCEKS");
+        ks.load(null, keyStorePassword.toCharArray());
+        KeyStore.PasswordProtection keyStorePP = new KeyStore.PasswordProtection(keyStorePassword.toCharArray());
+
+        ks.setEntry(entry, new KeyStore.SecretKeyEntry(
+                generatedSecret), keyStorePP);
+
+        FileOutputStream fos = new java.io.FileOutputStream(keyStoreLocation);
+        ks.store(fos, keyStorePassword.toCharArray());
+    }
+```
 # TODO 
 
 Mon eclipse est censé être tout bien configuré pour tester mon appli, il ne reste plus qu'à ajouter tout ce qui relève du datasourde à configurer de 2 manières:
