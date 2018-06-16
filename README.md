@@ -79,7 +79,7 @@ Toutes ces valeurs sont rassemblées dans un fichier d'extrait xml généré par
               mvn clean install -up -U -f ./lauriane-deployeur-test/jiblWebappTest/pom.xml
 
 Dans ce fichier, la configuration typique contient les éléments suivants:
-
+```
     <plugins>
     <plugin>
 	<groupId>lasselle</groupId>
@@ -116,14 +116,20 @@ Dans ce fichier, la configuration typique contient les éléments suivants:
 				<!-- <nom-conteneur-docker-sgbdr>ciblededeploiement-composant-sgbdr</nom-conteneur-docker-sgbdr> -->
 				<!-- <ip-cible-sgbdr>192.168.1.149</ip-cible-sgbdr> -->
 				<!-- <no-port-cible-sgbdr>4466</no-port-cible-sgbdr> -->
-				<!-- Utilisateur Linux opérateur du plugin -->
-				<lx-user>lauriane</lx-user>
-				<lx-pwd>lauriane</lx-pwd>
+				
+				<!-- Utilisateur Linux opérateur du plugin sur l'hôte docker -->
+				<lx-user>jean</lx-user>
+				<!-- lx-pwd>jean</lx-pwd -->
+				<!-- clé privée pour l'authentification ssh linux sur l'hôte docker -->
+				<dockhost-ssh-private-key-file>C:\moi\mes_repos_git\mcles-ssh\<dockhost-ssh-private-key-file>
+				
 				<!-- repo git assistant du plugin -->
 				<url-repo-git-deploiements>https://github.com/Jean-Baptiste-Lasselle/lauriane-deploiement.git</url-repo-git-deploiements>
 				<nom-repo-git-deploiements>lauriane-deploiement</nom-repo-git-deploiements>
 				<git-username>Jean-Baptiste-Lasselle</git-username>
-				<git-userpwd>***************</git-userpwd>
+				<!-- git-userpwd>***************</git-userpwd -->
+				<!-- clé privée pour l'authentification ssh github/gitlab/gogs.io etc... -->
+				<git-ssh-private-key-file>C:\moi\mes_repos_git\mcles-ssh\<git-ssh-private-key-file>
 				<!-- 
 				vous devez choisir un répertoire qui pourra être librement utilisé par le plugin maven
 				 -->
@@ -132,10 +138,36 @@ Dans ce fichier, la configuration typique contient les éléments suivants:
 			</configuration>
 	</execution>
     </executions>
-# TODO: Keystore pour les mots de passe 
+```
+# TODO: Keystore pour les mots de passe + Auth accès SSH param 
 
 
-Le but est quà chaque fois que j'utilise mon fullstack-maven-plugin, si je saisisit mon mot de passe une fois, il y a une case à cocher "se souvenir du mot de passe" pour un compte github, ou pour un couple user/host linux [user@host] dans le cas SSH. SI la case est cochée, maven se souvient du mot de passe entre deux exécutions distinctes et successives de maven.
+Le but est qu'à chaque fois que j'utilise mon fullstack-maven-plugin, les authentifications soient transparentes.
+Deux authentifications sont réalisées, les deux par le protocole SSH, l'une est l'authnetification linux réalisée à la connexion SSH distante à l'hôte docker hébergeant la cible de déploiement Jee, l'autre l'authentification SSH réalisée pour pousser de nouvellesz versions sur les repo git assistant des déploiements.
+Le fonctionnement transparent repose sur les mécanismes suivants, qu'il s'agisse de l'une ou l'autre des deux authentifications:
+* si l'authentification est configurée pour fonctionner avec une clé SSH, la configuration, dans le pom.xml, des exécutions du `fullstack-maven-plugin` permet de préciser le chemin de la clé privée utilisée par le développeur avec son client git, ou son client SSH:
+```
+    <plugins>
+    <plugin>
+	<groupId>lasselle</groupId>
+	<artifactId>deployeur</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<executions>
+		<execution>
+			<phase>install</phase>
+			<goals>
+				<goal>deploie</goal>
+			</goals>
+			<configuration>
+				<!-- clé privée pour l'authentification ssh linux sur l'hôte docker -->
+				<dockhost-ssh-private-key-file>C:\moi\mes_repos_git\mcles-ssh\<dockhost-ssh-private-key-file>
+				<!-- clé privée pour l'authentification ssh github/gitlab/gogs.io etc... -->
+				<git-ssh-private-key-file>C:\moi\mes_repos_git\mcles-ssh\<git-ssh-private-key-file>
+			</configuration>
+	</execution>
+    </executions>
+```
+* si l'authentification est configurée par username/motdepasse, je saisit mon mot de passe une fois, il y a une case à cocher "se souvenir du mot de passe" pour un compte github, ou pour un couple user/host linux [user@host] dans le cas SSH. Si la case est cochée, maven se souvient du mot de passe entre deux exécutions distinctes et successives de maven.
 
 
 Dixit cette [page](https://stackoverflow.com/questions/6243446/how-to-store-a-simple-key-string-inside-java-keystore) :
