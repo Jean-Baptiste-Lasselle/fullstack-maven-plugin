@@ -167,7 +167,7 @@ Le fonctionnement transparent repose sur les mécanismes suivants, qu'il s'agiss
 	</execution>
     </executions>
 ```
-* si l'authentification est configurée par username/motdepasse, je saisit mon mot de passe une fois, il y a une case à cocher "se souvenir du mot de passe" pour un compte github, ou pour un couple user/host linux [user@host] dans le cas SSH. Si la case est cochée, maven se souvient du mot de passe entre deux exécutions distinctes et successives de maven.
+* si l'authentification est configurée par username/motdepasse, je saisis mon mot de passe une fois, il y a une case à cocher "se souvenir du mot de passe" pour un compte github/gitlab/gogs.io.... Si la case est cochée, maven se souvient du mot de passe entre deux exécutions distinctes et successives de maven.
 
 
 Dixit cette [page](https://stackoverflow.com/questions/6243446/how-to-store-a-simple-key-string-inside-java-keystore) :
